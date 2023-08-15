@@ -84,7 +84,7 @@ const SingUpContainer = styled.section`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #ebe8e8;
+  background-color: #333333;
   height: 100vh;
 
   button{
