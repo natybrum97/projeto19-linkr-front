@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { FiChevronDown } from 'react-icons/fi';
+import SearchBar from "./SearchBar";
 
 export default function Header() {
 
@@ -8,6 +9,10 @@ export default function Header() {
         <PageContainerTopo>
 
             <h1>linkr</h1>
+
+            <SearchBarWrapper>
+                <SearchBar />
+            </SearchBarWrapper>  
 
             <Container>
 
@@ -63,3 +68,12 @@ const Container = styled.div`
     align-items:center;
     }
 `
+
+const SearchBarWrapper = styled.div`
+    width: 543px;
+    max-width: 543px;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
+`;
