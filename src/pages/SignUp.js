@@ -1,7 +1,7 @@
-import { Link, useNavigate } from "react-router-dom"
-import styled from "styled-components"
-import { useState } from "react";
 import axios from "axios";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import GlobalStyle from "../style/GlobalStyle";
 
 export default function SignUpPage() {
@@ -26,7 +26,7 @@ export default function SignUpPage() {
 
 
 
-        const promise = axios.post(`${import.meta.env.VITE_API_URL}/cadastro`, obj);
+        const promise = axios.post(`${process.env.REACT_APP_API_URI}/signup`, obj);
 
         promise.then(resposta => {
 

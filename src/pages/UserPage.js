@@ -1,7 +1,5 @@
 import { styled } from "styled-components";
 import SearchBar from "../components/SearchBar";
-import { TIMELINEPOSTS } from "../MOCK/TIMELINEPOSTS";
-import Post from "../components/Post";
 
 export default function UserPage() {
   return (
