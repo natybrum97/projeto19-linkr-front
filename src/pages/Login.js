@@ -1,7 +1,7 @@
-import { useState } from "react";
-import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import GlobalStyle from "../style/GlobalStyle";
 
 export default function Login() {
@@ -19,7 +19,7 @@ export default function Login() {
       password
     }
 
-    const promise = axios.post(`${import.meta.env.VITE_API_URL}/signin`, obj);
+    const promise = axios.post(`${process.env.REACT_APP_API_URI}/signin`, obj);
 
     promise.then(response => {
       localStorage.setItem("token", response.data.token);
