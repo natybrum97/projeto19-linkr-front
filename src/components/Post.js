@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { styled } from "styled-components";
-import { Tagify } from "react-tagify";
 import axios from "axios";
 
 const Post = ({
@@ -111,7 +110,7 @@ const Post = ({
     <StyledPost>
       <PostInfo>
         <div>
-          <img src={pictureUrl} alt={`${name}'s profile`} />
+          <img src={pictureUrl} alt="pictureUrl" />
         </div>
         {isLiked ? (
           <StyledFilledHeart
@@ -132,13 +131,7 @@ const Post = ({
       </PostInfo>
       <PostText>
         <h2>{name}</h2>
-        <Tagify
-          tagStyle={{
-            fontWeight: "bold",
-          }}
-        >
-          <p>{postText}</p>
-        </Tagify>
+        <p>{postText}</p>
       </PostText>
       <Snippet onClick={() => window.open(postUrl)}>
         <div>
@@ -147,7 +140,7 @@ const Post = ({
           <h3>{postUrl}</h3>
         </div>
         <div>
-          <img src={image} alt={title} />
+          <img src={image} alt="PostImg" />
         </div>
       </Snippet>
     </StyledPost>
@@ -350,18 +343,6 @@ const PostText = styled.div`
 `;
 
 const StyledHeart = styled(AiOutlineHeart)`
-  cursor: pointer;
-  margin-top: 10px;
-  margin-bottom: 6px;
-  font-size: 20px;
-  color: #ffffff;
-  &:hover {
-    transition-duration: 400ms;
-    color: #ac0000;
-  }
-`;
-
-const StyledHeartOutline = styled(AiOutlineHeart)`
   cursor: pointer;
   margin-top: 10px;
   margin-bottom: 6px;

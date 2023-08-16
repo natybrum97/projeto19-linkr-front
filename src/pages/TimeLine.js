@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import Post from "../components/Post";
+import SearchBar from "../components/SearchBar";
 
 const TimeLine = () => {
 
@@ -40,6 +41,11 @@ const TimeLine = () => {
 
   return (
     <StyledTimeLine>
+
+      <SearchBarWrapper>
+        <SearchBar />
+      </SearchBarWrapper>
+
       <h1>timeline</h1>
         <div>
           <StyledPostForm onSubmit={e => submitPost(e)}>
@@ -71,6 +77,20 @@ const TimeLine = () => {
 };
 
 export default TimeLine;
+
+const SearchBarWrapper = styled.span`
+  width: 100%;
+  margin-top: 30px;
+  max-width: 100%;
+
+  @media (min-width: 767px) {
+    display: none;
+    
+    input {
+      font-size: 16px;
+    }
+  }
+`;
 
 const StyledTimeLine = styled.div`
   @media (min-width: 1200px) {
