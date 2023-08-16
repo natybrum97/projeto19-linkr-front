@@ -1,22 +1,133 @@
-import { AiOutlineHeart } from "react-icons/ai";
+import React, { useState, useEffect } from "react";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { styled } from "styled-components";
+import axios from "axios";
 
 const Post = ({
   post: {
+    id,
+    postId = id,
     postUrl,
     postText,
     user: { name, pictureUrl },
-    urlMetaData: { title, description, image },
+    urlMetaData,
+    likes,
   },
 }) => {
+  const title = urlMetaData ? urlMetaData.title : "";
+  const description = urlMetaData ? urlMetaData.description : "";
+  const image = urlMetaData ? urlMetaData.image : "";
+
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [showLikesTooltip, setShowLikesTooltip] = useState(false);
+
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userid");
+
+  useEffect(() => {
+    const fetchLikeCount = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URI}/likes/${postId}`
+        );
+        const data = response.data;
+
+        setLikeCount(data.likesCount);
+
+        if (data.usersLiked.length > 0) {
+          const usernames = data.usersLiked.map((user) => user.username);
+          console.log(usernames);
+        }
+      } catch (error) {
+        console.error("Erro ao obter a contagem de curtidas:", error);
+      }
+    };
+
+    const fetchUserLikedStatus = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URI}/likes/${postId}`
+        );
+        const data = response.data;
+        const userLiked = data.usersLiked.some(
+          (like) => like.userId === parseInt(userId)
+        );
+        setIsLiked(userLiked);
+        setLikeCount(data.likesCount);
+      } catch (error) {
+        console.error("Erro ao obter a contagem de curtidas:", error);
+      }
+    };
+
+    fetchLikeCount();
+    fetchUserLikedStatus();
+  }, [postId, userId]);
+
+  const handleLikeClick = async () => {
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_API_URI}/like`,
+        {
+          postId: postId,
+          userId: userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setIsLiked(true);
+      setLikeCount(likeCount + 1);
+    } catch (error) {
+      console.error("Erro ao curtir o post:", error);
+    }
+  };
+
+  const handleUnlikeClick = async () => {
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_API_URI}/unlike`,
+        {
+          postId: postId,
+          userId: userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setIsLiked(false);
+      setLikeCount(likeCount - 1);
+    } catch (error) {
+      console.error("Erro ao descurtir o post:", error);
+    }
+  };
+
   return (
     <StyledPost>
       <PostInfo>
         <div>
-        <img src={pictureUrl} alt="Profile" />
+          <img src={pictureUrl} alt="pictureUrl" />
         </div>
-        <StyledHeart></StyledHeart>
-        <p>99 likes</p>
+        {isLiked ? (
+          <StyledFilledHeart
+            onMouseEnter={() => setShowLikesTooltip(true)}
+            onMouseLeave={() => setShowLikesTooltip(false)}
+            onClick={handleUnlikeClick}
+          />
+        ) : (
+          <StyledHeart onClick={handleLikeClick} />
+        )}
+        {showLikesTooltip && (
+          <LikesTooltip>
+            <div>Kaio</div>
+          </LikesTooltip>
+        )}
+
+        <p>{likeCount} likes</p>
       </PostInfo>
       <PostText>
         <h2>{name}</h2>
@@ -29,7 +140,7 @@ const Post = ({
           <h3>{postUrl}</h3>
         </div>
         <div>
-          <img src={image} alt="Post" />
+          <img src={image} alt="PostImg" />
         </div>
       </Snippet>
     </StyledPost>
@@ -37,6 +148,21 @@ const Post = ({
 };
 
 export default Post;
+
+const LikesTooltip = styled.div`
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  display: flex;
+  gap: 5px;
+  div {
+    white-space: nowrap;
+  }
+`;
 
 const Snippet = styled.div`
   @media (min-width: 1200px) {
@@ -225,5 +351,20 @@ const StyledHeart = styled(AiOutlineHeart)`
   &:hover {
     transition-duration: 400ms;
     color: #ac0000;
+  }
+`;
+
+const StyledFilledHeart = styled(AiFillHeart)`
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 6px;
+  font-size: 20px;
+  color: #ac0000;
+  &:hover {
+    transition-duration: 400ms;
+    color: #ffffff;
+    ${StyledPost}:hover & {
+      color: #ffffff;
+    }
   }
 `;
