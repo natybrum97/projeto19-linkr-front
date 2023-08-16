@@ -12,16 +12,20 @@ export default function App() {
 
   return (
     <PagesContainer>
-      <LoginProvider>
+    
+      <BrowserRouter>
+        <LoginProvider>
         { pathname !== '/signup' && pathname !== '/' 
           && <Header />
         }
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/signup" element={< SignUp/>} />
+          <Route path="/sign-up" element={< SignUp/>} />
           <Route path="/timeline" element={< TimeLine/>} />
         </Routes>
       </LoginProvider>
+      </BrowserRouter>
+
     </PagesContainer>
   );
 }

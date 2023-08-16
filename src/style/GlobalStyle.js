@@ -46,6 +46,15 @@ input::placeholder {
     letter-spacing: 0em;
     text-align: left;
     color: #9F9F9F;
+
+    @media (max-width: 767px) {
+    font-family: Oswald;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 33px;
+    letter-spacing: 0em;
+
+  }
 }
 
     form {
