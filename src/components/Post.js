@@ -1,17 +1,33 @@
 import { AiOutlineHeart } from "react-icons/ai";
 import { styled } from "styled-components";
+import { Tagify } from "react-tagify";
 
-const Post = ({ post: { postUrl, postText, user: { name, pictureUrl }, urlMetaData: { title, description, image } } }) => {
+const Post = ({
+  post: {
+    postUrl,
+    postText,
+    user: { name, pictureUrl },
+    urlMetaData: { title, description, image },
+  },
+}) => {
   return (
     <StyledPost>
       <PostInfo>
-        <div><img src={pictureUrl}/></div>
+        <div>
+          <img src={pictureUrl} />
+        </div>
         <StyledHeart></StyledHeart>
         <p>99 likes</p>
       </PostInfo>
       <PostText>
         <h2>{name}</h2>
-        <p>{postText}</p>
+        <Tagify
+          tagStyle={{
+            fontWeight: "bold",
+          }}
+        >
+          <p>{postText}</p>
+        </Tagify>
       </PostText>
       <Snippet onClick={() => window.open(postUrl)}>
         <div>
@@ -19,7 +35,9 @@ const Post = ({ post: { postUrl, postText, user: { name, pictureUrl }, urlMetaDa
           <h2>{description}</h2>
           <h3>{postUrl}</h3>
         </div>
-        <div><img src={image}/></div>
+        <div>
+          <img src={image} />
+        </div>
       </Snippet>
     </StyledPost>
   );
@@ -40,15 +58,15 @@ const Snippet = styled.div`
   right: 15px;
   min-width: 76%;
   max-width: 76%;
-  border: 1px solid #4D4D4D;
+  border: 1px solid #4d4d4d;
   border-radius: 8px;
   background-color: #171717;
-  &:hover{
+  &:hover {
     transition-duration: 400ms;
     opacity: 0.85;
   }
   display: flex;
-  div:first-child{
+  div:first-child {
     @media (min-width: 1200px) {
       width: calc(100% - 180px);
       margin: 16px;
@@ -59,7 +77,7 @@ const Snippet = styled.div`
     font-family: Lato;
     align-self: start;
     margin: 8px;
-    h1{
+    h1 {
       @media (min-width: 1200px) {
         font-size: 16px;
         line-height: 19px;
@@ -75,10 +93,10 @@ const Snippet = styled.div`
       font-size: 11px;
       font-weight: 400;
       line-height: 13px;
-      color: #CECECE;
+      color: #cecece;
       align-self: flex-start;
     }
-    h2{
+    h2 {
       @media (min-width: 1200px) {
         font-size: 11px;
         line-height: 13px;
@@ -91,10 +109,10 @@ const Snippet = styled.div`
       font-size: 9px;
       font-weight: 400;
       line-height: 11px;
-      color: #9B9595;
+      color: #9b9595;
       align-self: flex-start;
     }
-    h3{
+    h3 {
       @media (min-width: 1200px) {
         font-size: 11px;
         line-height: 13px;
@@ -107,21 +125,24 @@ const Snippet = styled.div`
       font-size: 9px;
       font-weight: 400;
       line-height: 11px;
-      color: #CECECE;
+      color: #cecece;
       align-self: flex-start;
     }
   }
-  div:last-child{
+  div:last-child {
     position: absolute;
     right: 0;
     @media (min-width: 1200px) {
-      width: 155px; height: 155px;
+      width: 155px;
+      height: 155px;
     }
-    width: 115px; height: 115px;
-    background-color: #4D4D4D;
+    width: 115px;
+    height: 115px;
+    background-color: #4d4d4d;
     border-radius: 0 6px 6px 0;
-    img{
-      width: 100%; height: 100%;
+    img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       border-radius: 0 6px 6px 0;
     }
@@ -147,33 +168,35 @@ const PostInfo = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 9px;
-  margin-left: 13px;  
+  margin-left: 13px;
   max-width: 40px;
   left: 0;
   display: flex;
   align-items: center;
-  div{
-    width: 40px; height: 40px;
-    img{
-      width: 100%; height: 100%;
+  div {
+    width: 40px;
+    height: 40px;
+    img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       border-radius: 100%;
     }
   }
-  p{
+  p {
     font-family: Lato;
     font-size: 9px;
     font-weight: 400;
     line-height: 11px;
-    color: #FFFFFF;
-    }
+    color: #ffffff;
+  }
 `;
 
-const PostText =  styled.div`
+const PostText = styled.div`
   margin-left: 13px;
   display: flex;
   flex-direction: column;
-  h2{
+  h2 {
     align-self: flex-start;
     margin-top: 10px;
     margin-bottom: 4px;
@@ -181,9 +204,9 @@ const PostText =  styled.div`
     font-size: 17px;
     font-weight: 400;
     line-height: 20.4px;
-    color: #FFFFFF;
+    color: #ffffff;
   }
-  p{
+  p {
     align-self: flex-start;
     max-width: 95%;
     word-break: break-all;
@@ -196,7 +219,7 @@ const PostText =  styled.div`
     font-size: 15px;
     font-weight: 400;
     line-height: 18px;
-    color: #B7B7B7;
+    color: #b7b7b7;
   }
 `;
 
@@ -205,9 +228,9 @@ const StyledHeart = styled(AiOutlineHeart)`
   margin-top: 10px;
   margin-bottom: 6px;
   font-size: 20px;
-  color: #FFFFFF;
-  &:hover{
+  color: #ffffff;
+  &:hover {
     transition-duration: 400ms;
-    color: #AC0000;
+    color: #ac0000;
   }
 `;
