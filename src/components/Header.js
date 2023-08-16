@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import { FiChevronDown } from 'react-icons/fi';
+import styled from "styled-components";
 import SearchBar from "./SearchBar";
 
 export default function Header() {
@@ -28,6 +28,7 @@ export default function Header() {
 }
 
 const PageContainerTopo = styled.div`
+    z-index: 2;
     display: flex;
     justify-content:space-between;
     align-items: center;

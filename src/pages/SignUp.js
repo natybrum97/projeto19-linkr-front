@@ -99,6 +99,33 @@ const SingUpContainer = styled.section`
     letter-spacing: 0em;
     color: #FFFFFF;
   }
+
+  @media (max-width: 767px) {
+    width:100%;
+    height: 100vh;
+    flex: 75;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 63px;
+
+    button{
+    width: calc(100% - 12.7%);
+  }
+
+    input{
+    width: calc(100% - 18%);
+  }
+
+  h2{
+    font-family: Lato;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0em;
+  }
+  }
 `
 const Logo = styled.section`
   flex: 63;
@@ -132,9 +159,47 @@ const Logo = styled.section`
     text-align: left;
     color: #FFFFFF;
   }
+
+  @media (max-width: 767px) {
+    width:100%;
+    height:175px;
+    flex: 25;
+
+    p {
+    width: 237px;
+    height: 68px;
+    font-family: Oswald;
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 34px;
+    letter-spacing: 0em;
+    text-align: center;
+    }
+
+    h1{
+    width: 167px;
+    height: 84px;
+    font-family: Passion One;
+    font-size: 76px;
+    font-weight: 700;
+    line-height: 84px;
+    letter-spacing: 0.05em;
+    text-align: left;
+
+    }
+  }
 `;
 
 const Container = styled.div`
   display: flex;
   justify-content: center;
+  background-color: #333333;
+
+  @media (max-width: 767px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+    height: 100vh;
+  }
 `
