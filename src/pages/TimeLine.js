@@ -1,6 +1,6 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { styled } from "styled-components";
-import { TIMELINEPOSTS } from "../MOCK/TIMELINEPOSTS";
 import Post from "../components/Post";
 
 const TimeLine = () => {
@@ -9,33 +9,63 @@ const TimeLine = () => {
     postUrl: '', postText: '',
   });
 
-  const submitPost = (e) => {
+  const [posts, setPosts] = useState(null);
+  const getPosts = async () => {
+    try {
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URI}/post`);
+      setPosts(data);
+    } catch ({response: {status, statusText, data: { message }}}) {
+      alert('An error occured while trying to fetch the posts, please refresh the page');
+    }
+  };
+  useEffect(() => {
+    getPosts();
+  }, []);
+
+  const [loading, setLoading] = useState(false);
+  const submitPost = async (e) => {
     e.preventDefault();
-    console.log(postInput);
-    setPostInput({ postUrl: '', postText: '' });
-  }
+    setLoading(true);
+    try {
+      //OBS: POR ENQUANTO ESTOU USANDO UM TOKEN FIXO DE TESTES
+      await axios.post(`${process.env.REACT_APP_API_URI}/post`, postInput, { headers: { Authorization: `Bearer ${'9f74abd6-1bd9-4d03-8182-69e3283ca1e0'}` } });
+      getPosts();
+      setLoading(false);
+    } catch ({response: {status, statusText, data: { message }}}) {
+      alert('Houve um erro ao publicar seu link');
+      setLoading(false);
+      setPostInput({ postUrl: '', postText: '' });
+    }
+  };
 
   return (
     <StyledTimeLine>
       <h1>timeline</h1>
-      <div>
-        <StyledPostForm onSubmit={e => submitPost(e)}>
+        <div>
+          <StyledPostForm onSubmit={e => submitPost(e)}>
           <div>
             <div><img src='https://i.pinimg.com/736x/cf/77/d2/cf77d222c2ae919cdd2f9fcdbb3e4906.jpg'/></div>
             <p>What are you going to share today?</p>
           </div>
           <input onChange={e => setPostInput(previous => ({...previous, postUrl: e.target.value}))} 
-            type='url' placeholder="http://..." value={postInput.postUrl} required
+            type='url' placeholder="http://..." value={postInput.postUrl} required disabled={loading}
           ></input>
           <textarea onChange={e => setPostInput(previous => ({...previous, postText: e.target.value}))} 
-            type='text' placeholder="Awesome article about #javascript" value={postInput.postText}
+            type='text' placeholder="Awesome article about #javascript" value={postInput.postText} disabled={loading}
           ></textarea>
-          <button>Publish</button>
+          <button disabled={loading}>{loading ? 'Publishing...' : 'Publish'}</button>
         </StyledPostForm>
-        <ul>
-          {TIMELINEPOSTS.map(post => <Post post={post} key={post.id} />)}
-        </ul>
+
+        {posts === null ? <h4>Loading...</h4> : posts.length === 0 && <h4>There are no posts yet</h4>}
+
+        {posts !== null && posts.length > 0 
+          && 
+            <ul>
+              {posts.map(post => <Post post={post} key={post.id} />)}
+            </ul>
+        }
       </div>
+      
     </StyledTimeLine>
   )
 };
@@ -54,7 +84,6 @@ const StyledTimeLine = styled.div`
   flex-direction: column;
   h1{
     @media (min-width: 1200px) {
-      margin-left: 420px;
       font-size: 43px;
       line-height: 64px;
       align-self: center;
@@ -73,6 +102,19 @@ const StyledTimeLine = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
+    h4{
+      @media (min-width: 1200px) {
+        font-size: 34px;
+        line-height: 46px;
+    }
+      margin-top: 20px;
+      align-self: center;
+      font-family: Oswald;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 38px;
+      color: #FFFFFF;
+    }
   }
   ul{
     width: 100%;
@@ -150,6 +192,10 @@ const StyledPostForm = styled.form`
       opacity: 0.85;
       transition-duration: 400ms;
     }
+    &:disabled{
+      cursor: default;
+      opacity: 0.5;
+    }
   }
   input{
     @media (min-width: 1200px) {
@@ -169,6 +215,10 @@ const StyledPostForm = styled.form`
     padding-left: 10px;
     &::placeholder{
       color: #949494;
+    }
+    &:disabled{
+      cursor: default;
+      opacity: 0.5;
     }
   }
   textarea{
@@ -190,6 +240,10 @@ const StyledPostForm = styled.form`
     padding-top: 10px;
     &::placeholder{
       color: #949494;
+    }
+    &:disabled{
+      cursor: default;
+      opacity: 0.5;
     }
   }
 `;
