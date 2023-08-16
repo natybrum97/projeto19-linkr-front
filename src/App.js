@@ -1,22 +1,31 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import styled from "styled-components";
+import Header from "./components/Header";
 import { LoginProvider } from "./contexts/LoginContext";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
-import Home from "./pages/Home";
+import TimeLine from "./pages/TimeLine";
 
 export default function App() {
+
+  const { pathname } = useLocation();
+
   return (
     <PagesContainer>
+    
       <BrowserRouter>
         <LoginProvider>
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/sign-up" element={< SignUp/>} />
-            <Route path="/home" element={< Home/>} />
-          </Routes>
-        </LoginProvider>
+        { pathname !== '/signup' && pathname !== '/' 
+          && <Header />
+        }
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/sign-up" element={< SignUp/>} />
+          <Route path="/timeline" element={< TimeLine/>} />
+        </Routes>
+      </LoginProvider>
       </BrowserRouter>
+
     </PagesContainer>
   );
 }
