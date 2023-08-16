@@ -1,6 +1,5 @@
 import { AiOutlineHeart } from "react-icons/ai";
 import { styled } from "styled-components";
-import { Tagify } from "react-tagify";
 
 const Post = ({
   post: {
@@ -14,20 +13,14 @@ const Post = ({
     <StyledPost>
       <PostInfo>
         <div>
-          <img src={pictureUrl} />
+        <img src={pictureUrl} alt="Profile" />
         </div>
         <StyledHeart></StyledHeart>
         <p>99 likes</p>
       </PostInfo>
       <PostText>
         <h2>{name}</h2>
-        <Tagify
-          tagStyle={{
-            fontWeight: "bold",
-          }}
-        >
-          <p>{postText}</p>
-        </Tagify>
+        <p>{postText}</p>
       </PostText>
       <Snippet onClick={() => window.open(postUrl)}>
         <div>
@@ -36,7 +29,7 @@ const Post = ({
           <h3>{postUrl}</h3>
         </div>
         <div>
-          <img src={image} />
+          <img src={image} alt="Post" />
         </div>
       </Snippet>
     </StyledPost>
