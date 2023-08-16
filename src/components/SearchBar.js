@@ -10,7 +10,7 @@ export default function SearchBar() {
   );
 }
 
-const Container = styled.div`
+const Container = styled.form`
   height: 25px;
   display: flex;
   justify-content: space-between;

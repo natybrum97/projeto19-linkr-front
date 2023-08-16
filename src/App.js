@@ -5,6 +5,7 @@ import { LoginProvider } from "./contexts/LoginContext";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import TimeLine from "./pages/TimeLine";
+import UserPage from "./pages/UserPage";
 
 export default function App() {
 
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={< SignUp/>} />
           <Route path="/timeline" element={< TimeLine/>} />
+          <Route path="/user/:id" element={<UserPage />}/>
         </Routes>
       </LoginProvider>
     </PagesContainer>

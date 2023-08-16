@@ -71,10 +71,9 @@ const Container = styled.div`
 `
 
 const SearchBarWrapper = styled.div`
-    width: 543px;
-    max-width: 543px;
+    width: 593px;
 
-    @media (max-width: 768px) {
+    @media (max-width: 767px) {
         display: none;
     }
 `;
