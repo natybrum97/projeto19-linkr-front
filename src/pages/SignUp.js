@@ -44,6 +44,7 @@ export default function SignUpPage() {
             setEnviado(false);
             console.log(erro.response.data);
             alert(erro.response.data.message || erro.response.data);
+            navigate("/");
 
         });
 

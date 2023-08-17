@@ -31,6 +31,7 @@ export default function Login() {
     promise.then((response) => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", response.data.username);
+      localStorage.setItem("url", response.data.url);
       localStorage.setItem("userid", response.data.id);
       navigate("/timeline");
     });
