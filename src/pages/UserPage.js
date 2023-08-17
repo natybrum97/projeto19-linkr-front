@@ -18,7 +18,7 @@ export default function UserPage() {
 
   useEffect(() => {
     LoadPosts(authToken, id);
-  }, []);
+  }, [authToken, id]);
 
   return (
     <UserTimeLine>
@@ -29,7 +29,7 @@ export default function UserPage() {
       <Container>
         <img
           src="https://i.pinimg.com/736x/cf/77/d2/cf77d222c2ae919cdd2f9fcdbb3e4906.jpg"
-          alt="url"
+          alt="profile picture"
         />
         <h1>Juvenal Juvêncio’s posts</h1>
       </Container>
