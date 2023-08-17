@@ -16,17 +16,12 @@ export default function Login() {
 
     setEnviado(true);
 
-    if (!email || !password) {
-      alert('Please fill in all the fields.');
-      return;
-  }
-
     const obj = {
       email,
       password,
     };
 
-    const promise = axios.post(`${process.env.REACT_APP_API_URI}/signin`, obj).then((response) => {
+    axios.post(`${process.env.REACT_APP_API_URI}/signin`, obj).then((response) => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", response.data.username);
       localStorage.setItem("url", response.data.url);
@@ -34,8 +29,8 @@ export default function Login() {
       navigate("/timeline");
     }).catch((erro) => {
       setEnviado(false);
-      alert("Invalid username and/or password!");
       console.log(erro.response.data);
+      alert(erro.response.data.message || erro.response.data);
     });
   }
 
