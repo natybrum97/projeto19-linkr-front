@@ -24,6 +24,7 @@ export default function Login() {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", response.data.username);
       localStorage.setItem("userid", response.data.id);
+      localStorage.setItem("pictureUrl", response.data.url);
       navigate("/timeline");
     });
 

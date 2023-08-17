@@ -11,10 +11,10 @@ export default function UserPage() {
 
       <Container>
         <img
-          src="https://i.pinimg.com/736x/cf/77/d2/cf77d222c2ae919cdd2f9fcdbb3e4906.jpg"
+          src={localStorage.getItem('pictureUrl')}
           alt="url"
         />
-        <h1>Juvenal Juvêncio’s posts</h1>
+        <h1>{localStorage.getItem('name')} posts</h1>
       </Container>
       
     </UserTimeLine>
