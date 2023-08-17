@@ -72,7 +72,7 @@ const TimeLine = () => {
           <div>
             <div>
               <img
-                src={localStorage.getItem('pictureUrl')}
+                src={localStorage.getItem('url')}
                 alt="userImg"
               />
             </div>

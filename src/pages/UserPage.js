@@ -11,7 +11,7 @@ export default function UserPage() {
 
       <Container>
         <img
-          src={localStorage.getItem('pictureUrl')}
+          src={localStorage.getItem('url')}
           alt="url"
         />
         <h1>{localStorage.getItem('name')} posts</h1>

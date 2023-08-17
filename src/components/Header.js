@@ -17,7 +17,7 @@ export default function Header() {
             <Container>
 
                 <FiChevronDown color="white" size={50} cursor= "pointer" />
-                <img data-test="avatar" src={localStorage.getItem('pictureUrl')} alt="url" />
+                <img data-test="avatar" src={localStorage.getItem('url')} alt="url" />
 
             </Container>
 
