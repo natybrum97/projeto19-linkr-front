@@ -43,28 +43,13 @@ export default function Login() {
         <GlobalStyle />
 
         <form onSubmit={sendInformations}>
-          <input
-            placeholder="e-mail"
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            placeholder="password"
-            type="password"
-            autoComplete="new-password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button type="submit">Log In</button>
+          <input data-test="email" placeholder="e-mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
+          <input data-test="password" placeholder="password" type="password" autoComplete="new-password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <button data-test="login-btn" type="submit">Log In</button>
         </form>
 
         <Link to="/signup">
-          <h2>First time? Create an account!</h2>
+          <h2 data-test="sign-up-link">First time? Create an account!</h2>
         </Link>
       </SingInContainer>
     </Container>

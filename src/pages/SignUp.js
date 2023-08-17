@@ -60,16 +60,16 @@ export default function SignUpPage() {
                 <form onSubmit={sendInformations}>
 
 
-                    <input placeholder="e-mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                    <input placeholder="password" type="password" autoComplete="new-password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                    <input placeholder="username" type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-                    <input placeholder="picture url" type="text" id="picture" value={url} onChange={(e) => setUrl(e.target.value)} required />
-                    <button type="submit">Sign Up</button>
+                    <input data-test="email" placeholder="e-mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                    <input data-test="password" placeholder="password" type="password" autoComplete="new-password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                    <input data-test="username" placeholder="username" type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                    <input data-test="picture-url" placeholder="picture url" type="text" id="picture" value={url} onChange={(e) => setUrl(e.target.value)} required />
+                    <button data-test="sign-up-btn" type="submit">Sign Up</button>
 
                 </form>
 
                 <Link to='/'>
-                    <h2>Switch back to log in</h2>
+                    <h2 data-test="login-link">Switch back to log in</h2>
                 </Link>
 
             </SingUpContainer>
