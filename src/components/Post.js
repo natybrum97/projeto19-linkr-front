@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { styled } from "styled-components";
+import { Link } from "react-router-dom";
 
 const Post = ({
   post: {
@@ -9,19 +10,30 @@ const Post = ({
     postId = id,
     postUrl,
     postText,
-    user: { name, pictureUrl }
+    user: { name, pictureUrl },
   },
 }) => {
-
-  const [urlMetaData, setUrlMetaData] = useState({ title: '', description: '', image: undefined});
+  const [urlMetaData, setUrlMetaData] = useState({
+    title: "",
+    description: "",
+    image: undefined,
+  });
   const fetchMetaData = async () => {
     try {
-      const { data: { title, description, images } } = await axios.get(`https://jsonlink.io/api/extract?url=${postUrl}`);
+      const {
+        data: { title, description, images },
+      } = await axios.get(`https://jsonlink.io/api/extract?url=${postUrl}`);
       setUrlMetaData(() => ({ title, description, image: images[0] }));
-    } catch ({response: {status, statusText, data: { message }}}){
+    } catch ({
+      response: {
+        status,
+        statusText,
+        data: { message },
+      },
+    }) {
       console.log(`${status} ${statusText}\n${message}`);
     }
-  }
+  };
   useEffect(() => {
     fetchMetaData();
   }, []);
@@ -114,6 +126,22 @@ const Post = ({
     }
   };
 
+  const textPost = postText.split(" ");
+
+  const renderBoldHashtags = () => {
+    return textPost.map((word, i) => {
+      if (word[0] === "#") {
+        return (
+          <StyledLink to={`/hashtag/${word.replace("#", "")}`}>
+            <strong key={i}> {word} </strong>
+          </StyledLink>
+        );
+      } else {
+        return <span key={i}> {word} </span>;
+      }
+    });
+  };
+
   return (
     <StyledPost>
       <PostInfo>
@@ -139,7 +167,7 @@ const Post = ({
       </PostInfo>
       <PostText>
         <h2>{name}</h2>
-        <p>{postText}</p>
+        <p>{renderBoldHashtags()}</p>
       </PostText>
       <Snippet onClick={() => window.open(postUrl)}>
         <div>
@@ -148,10 +176,9 @@ const Post = ({
           <h3>{postUrl}</h3>
         </div>
         <div>
-        {urlMetaData.image 
-          &&
-          <img src={urlMetaData.image} alt="urlMetaDataImage" />
-        }
+          {urlMetaData.image && (
+            <img src={urlMetaData.image} alt="urlMetaDataImage" />
+          )}
         </div>
       </Snippet>
     </StyledPost>
@@ -351,6 +378,10 @@ const PostText = styled.div`
     line-height: 18px;
     color: #b7b7b7;
   }
+
+  strong {
+    font-weight: 700;
+  }
 `;
 
 const StyledHeart = styled(AiOutlineHeart)`
@@ -378,4 +409,9 @@ const StyledFilledHeart = styled(AiFillHeart)`
       color: #ffffff;
     }
   }
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: white;
 `;
