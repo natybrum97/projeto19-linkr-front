@@ -14,12 +14,12 @@ export default function App() {
   return (
     <PagesContainer>
       <LoginProvider>
-        { pathname !== '/signup' && pathname !== '/' 
+        { pathname !== '/sign-up' && pathname !== '/' 
           && <Header />
         }
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/signup" element={< SignUp/>} />
+          <Route path="/sign-up" element={< SignUp/>} />
           <Route path="/timeline" element={< TimeLine/>} />
           <Route path="/user/:id" element={<UserPage />}/>
         </Routes>
