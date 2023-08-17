@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { styled } from "styled-components";
 import { Link } from "react-router-dom";
+import { styled } from "styled-components";
 
 const Post = ({
   post: {
@@ -126,10 +126,10 @@ const Post = ({
     }
   };
 
-  const textPost = postText.split(" ");
-
   const renderBoldHashtags = () => {
-    return textPost.map((word, i) => {
+    if (postText === null) return;
+
+    return postText.split(" ").map((word, i) => {
       if (word[0] === "#") {
         return (
           <StyledLink to={`/hashtag/${word.replace("#", "")}`}>
