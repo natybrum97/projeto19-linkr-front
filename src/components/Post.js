@@ -9,10 +9,22 @@ const Post = ({
     postId = id,
     postUrl,
     postText,
-    user: { name, pictureUrl },
-    urlMetaData: { title, description, image}
+    user: { name, pictureUrl }
   },
 }) => {
+
+  const [urlMetaData, setUrlMetaData] = useState({ title: '', description: '', image: undefined});
+  const fetchMetaData = async () => {
+    try {
+      const { data: { title, description, images } } = await axios.get(`https://jsonlink.io/api/extract?url=${postUrl}`);
+      setUrlMetaData(() => ({ title, description, image: images[0] }));
+    } catch ({response: {status, statusText, data: { message }}}){
+      console.log(`${status} ${statusText}\n${message}`);
+    }
+  }
+  useEffect(() => {
+    fetchMetaData();
+  }, []);
 
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
@@ -131,12 +143,15 @@ const Post = ({
       </PostText>
       <Snippet onClick={() => window.open(postUrl)}>
         <div>
-          <h1>{title}</h1>
-          <h2>{description}</h2>
+          <h1>{urlMetaData.title}</h1>
+          <h2>{urlMetaData.description}</h2>
           <h3>{postUrl}</h3>
         </div>
         <div>
-          <img src={image} alt="PostImg" />
+        {urlMetaData.image 
+          &&
+          <img src={urlMetaData.image} alt="urlMetaDataImage" />
+        }
         </div>
       </Snippet>
     </StyledPost>
@@ -234,7 +249,7 @@ const Snippet = styled.div`
         margin-bottom: 16px;
         max-height: 15px;
       }
-      max-height: 9px;
+      max-height: 12px;
       overflow-y: auto;
       word-break: break-all;
       font-size: 9px;
