@@ -26,17 +26,13 @@ export default function Login() {
       password,
     };
 
-    const promise = axios.post(`${process.env.REACT_APP_API_URI}/signin`, obj);
-
-    promise.then((response) => {
+    const promise = axios.post(`${process.env.REACT_APP_API_URI}/signin`, obj).then((response) => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", response.data.username);
       localStorage.setItem("url", response.data.url);
       localStorage.setItem("userid", response.data.id);
       navigate("/timeline");
-    });
-
-    promise.catch((erro) => {
+    }).catch((erro) => {
       setEnviado(false);
       alert("Invalid username and/or password!");
       console.log(erro.response.data);
