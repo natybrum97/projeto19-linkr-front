@@ -14,7 +14,7 @@ export default function App() {
   return (
     <PagesContainer>
       <LoginProvider>
-        { pathname !== '/signup' && pathname !== '/' 
+        { pathname !== '/sign-up' && pathname !== '/' 
           && <Header />
         }
         <Routes>
