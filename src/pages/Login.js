@@ -9,9 +9,17 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [enviado, setEnviado] = useState(false);
 
   function sendInformations(e) {
     e.preventDefault();
+
+    setEnviado(true);
+
+    if (!email || !password) {
+      alert('Please fill in all the fields.');
+      return;
+  }
 
     const obj = {
       email,
@@ -28,6 +36,7 @@ export default function Login() {
     });
 
     promise.catch((erro) => {
+      setEnviado(false);
       alert("Invalid username and/or password!");
       console.log(erro.response.data);
     });
@@ -43,12 +52,12 @@ export default function Login() {
         <GlobalStyle />
 
         <form onSubmit={sendInformations}>
-          <input data-test="email" placeholder="e-mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
-          <input data-test="password" placeholder="password" type="password" autoComplete="new-password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <button data-test="login-btn" type="submit">Log In</button>
+          <input data-test="email" placeholder="e-mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input data-test="password" placeholder="password" type="password" autoComplete="new-password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <button data-test="login-btn" type="submit" disabled={enviado}>Log In</button>
         </form>
 
-        <Link to="/signup">
+        <Link to="/sign-up">
           <h2 data-test="sign-up-link">First time? Create an account!</h2>
         </Link>
       </SingInContainer>
