@@ -43,7 +43,7 @@ const TimeLine = () => {
       //OBS: POR ENQUANTO ESTOU USANDO UM TOKEN FIXO DE TESTES
       await axios.post(`${process.env.REACT_APP_API_URI}/post`, postInput, {
         headers: {
-          Authorization: `Bearer ${"9f74abd6-1bd9-4d03-8182-69e3283ca1e0"}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
       getPosts();
@@ -72,7 +72,7 @@ const TimeLine = () => {
           <div>
             <div>
               <img
-                src="https://i.pinimg.com/736x/cf/77/d2/cf77d222c2ae919cdd2f9fcdbb3e4906.jpg"
+                src={localStorage.getItem('url')}
                 alt="userImg"
               />
             </div>
