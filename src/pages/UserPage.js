@@ -1,10 +1,27 @@
 import { styled } from "styled-components";
 import SearchBar from "../components/SearchBar";
+import { useEffect, useState } from "react";
+import api from "../services/api";
 
 export default function UserPage() {
+  const authToken = localStorage.getItem("token");
+  const id = 1;
+
+  const [posts, setPosts] = useState(null);
+
+  function LoadPosts(token, id) {
+    const promise = api.getUserPost(token, id);
+
+    promise.then((response) => setPosts(response.data));
+    promise.catch((error) => console.log(error.response.data));
+  }
+
+  useEffect(() => {
+    LoadPosts(authToken, id);
+  }, []);
+
   return (
     <UserTimeLine>
-      
       <SearchBarWrapper>
         <SearchBar />
       </SearchBarWrapper>
@@ -16,7 +33,6 @@ export default function UserPage() {
         />
         <h1>Juvenal Juvêncio’s posts</h1>
       </Container>
-      
     </UserTimeLine>
   );
 }
@@ -33,7 +49,7 @@ const Container = styled.div`
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    margin-left: 10px ;
+    margin-left: 10px;
   }
 
   h1 {
@@ -45,16 +61,16 @@ const Container = styled.div`
 `;
 
 const SearchBarWrapper = styled.div`
-    width: 563px;
-    max-width: 100%;
+  width: 563px;
+  max-width: 100%;
 
-    @media (min-width: 767px) {
-      display: none;
-      
-      input {
-        font-size: 16px;
-      }
+  @media (min-width: 767px) {
+    display: none;
+
+    input {
+      font-size: 16px;
     }
+  }
 `;
 
 const UserTimeLine = styled.div`
@@ -67,11 +83,8 @@ const UserTimeLine = styled.div`
   gap: 10px;
 
   @media (max-width: 767px) {
-
     h1 {
       font-size: 30px;
     }
   }
 `;
-
-
