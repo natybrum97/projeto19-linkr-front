@@ -21,7 +21,7 @@ export default function Login() {
       password,
     };
 
-    axios.post(`${process.env.REACT_APP_API_URI}/signin`, obj).then((response) => {
+    axios.post(`${process.env.REACT_APP_API_URL}/signin`, obj).then((response) => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", response.data.username);
       localStorage.setItem("url", response.data.url);
