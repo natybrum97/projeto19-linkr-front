@@ -65,7 +65,7 @@ const TimeLine = () => {
 
       <h1>timeline</h1>
       <div>
-        <StyledPostForm onSubmit={(e) => submitPost(e)}>
+        <StyledPostForm data-test="publish-box" onSubmit={(e) => submitPost(e)}>
           <div>
             <div>
               <img
@@ -75,7 +75,7 @@ const TimeLine = () => {
             </div>
             <p>What are you going to share today?</p>
           </div>
-          <input
+          <input data-test="link"
             onChange={(e) =>
               setPostInput((previous) => ({
                 ...previous,
@@ -88,7 +88,7 @@ const TimeLine = () => {
             required
             disabled={loading}
           ></input>
-          <textarea
+          <textarea data-test="description"
             onChange={(e) =>
               setPostInput((previous) => ({
                 ...previous,
@@ -100,7 +100,7 @@ const TimeLine = () => {
             value={postInput.postText}
             disabled={loading}
           ></textarea>
-          <button disabled={loading}>
+          <button data-test="publish-btn" disabled={loading}>
             {loading ? "Publishing..." : "Publish"}
           </button>
         </StyledPostForm>
