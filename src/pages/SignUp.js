@@ -32,7 +32,7 @@ export default function SignUpPage() {
             url
         }
 
-       axios.post(`${process.env.REACT_APP_API_URI}/signup`, obj).then(resposta => {
+       axios.post(`${process.env.REACT_APP_API_URL}/signup`, obj).then(resposta => {
             console.log(resposta.data);
             navigate("/");
 
