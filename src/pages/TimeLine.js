@@ -10,11 +10,14 @@ const TimeLine = () => {
     postText: "",
   });
 
+  const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState(null);
   const getPosts = async () => {
     try {
       const { data } = await axios.get(`${process.env.REACT_APP_API_URI}/post`);
       setPosts(data);
+      setLoading(false);
+      setPostInput({ postUrl: "", postText: "" });
     } catch ({
       response: {
         status,
@@ -25,13 +28,14 @@ const TimeLine = () => {
       alert(
         "An error occured while trying to fetch the posts, please refresh the page"
       );
+      setLoading(false);
+      setPostInput({ postUrl: "", postText: "" });
     }
   };
   useEffect(() => {
     getPosts();
   }, []);
 
-  const [loading, setLoading] = useState(false);
   const submitPost = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -43,7 +47,6 @@ const TimeLine = () => {
         },
       });
       getPosts();
-      setLoading(false);
     } catch ({
       response: {
         status,
