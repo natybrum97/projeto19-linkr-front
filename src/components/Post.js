@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { styled } from "styled-components";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { styled } from "styled-components";
 
 const Post = ({
   post: {
@@ -10,13 +10,9 @@ const Post = ({
     postUrl,
     postText,
     user: { name, pictureUrl },
-    urlMetaData,
-    likes,
+    urlMetaData: { title, description, image}
   },
 }) => {
-  const title = urlMetaData ? urlMetaData.title : "";
-  const description = urlMetaData ? urlMetaData.description : "";
-  const image = urlMetaData ? urlMetaData.image : "";
 
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
