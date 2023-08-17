@@ -11,7 +11,7 @@ const HashtagPosts = () => {
 
   const getPosts = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API_URI}/post`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post`);
       setPosts(data);
     } catch ({
       response: {

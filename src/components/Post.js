@@ -49,7 +49,7 @@ const Post = ({
     const fetchLikeCount = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URI}/likes/${postId}`
+          `${process.env.REACT_APP_API_URL}/likes/${postId}`
         );
         const data = response.data;
 
@@ -67,7 +67,7 @@ const Post = ({
     const fetchUserLikedStatus = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URI}/likes/${postId}`
+          `${process.env.REACT_APP_API_URL}/likes/${postId}`
         );
         const data = response.data;
         const userLiked = data.usersLiked.some(
@@ -87,7 +87,7 @@ const Post = ({
   const handleLikeClick = async () => {
     try {
       await axios.post(
-        `${process.env.REACT_APP_API_URI}/like`,
+        `${process.env.REACT_APP_API_URL}/like`,
         {
           postId: postId,
           userId: userId,
@@ -108,7 +108,7 @@ const Post = ({
   const handleUnlikeClick = async () => {
     try {
       await axios.post(
-        `${process.env.REACT_APP_API_URI}/unlike`,
+        `${process.env.REACT_APP_API_URL}/unlike`,
         {
           postId: postId,
           userId: userId,

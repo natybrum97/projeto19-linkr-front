@@ -14,7 +14,7 @@ const TimeLine = () => {
   const [posts, setPosts] = useState(null);
   const getPosts = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API_URI}/post`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post`);
       setPosts(data);
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
@@ -41,7 +41,7 @@ const TimeLine = () => {
     setLoading(true);
     try {
       //OBS: POR ENQUANTO ESTOU USANDO UM TOKEN FIXO DE TESTES
-      await axios.post(`${process.env.REACT_APP_API_URI}/post`, postInput, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/post`, postInput, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
