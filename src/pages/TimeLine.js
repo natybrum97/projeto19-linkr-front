@@ -26,16 +26,8 @@ const TimeLine = () => {
       setPosts(data);
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
-    } catch ({
-      response: {
-        status,
-        statusText,
-        data: { message },
-      },
-    }) {
-      alert(
-        "An error occured while trying to fetch the posts, please refresh the page"
-      );
+    } catch (err) {
+      alert('An error occured while trying to fetch the posts, please refresh the page');
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
     }
@@ -111,9 +103,9 @@ const TimeLine = () => {
         </StyledPostForm>
 
         {posts === null ? (
-          <h4>Loading...</h4>
+          <h4 data-test="message">Loading...</h4>
         ) : (
-          posts.length === 0 && <h4>There are no posts yet</h4>
+          posts.length === 0 && <h4 data-test="message">There are no posts yet</h4>
         )}
 
         {posts !== null && posts.length > 0 && (
