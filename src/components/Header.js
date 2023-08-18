@@ -1,30 +1,40 @@
-import { FiChevronDown } from 'react-icons/fi';
-import styled from "styled-components";
-import SearchBar from "./SearchBar";
+import React, { useState, useContext } from 'react'; // Import useState
+import { LoginContext } from '../contexts/LoginContext';
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import styled from 'styled-components';
+import SearchBar from './SearchBar';
 
 export default function Header() {
 
+    const { logout } = useContext(LoginContext);
+
+    const [menuOpen, setMenuOpen] = useState(false); // State to manage menu open/close
+    const [arrowUp, setArrowUp] = useState(false); // State to manage arrow direction
+
+    const toggleMenu = () => {
+        setMenuOpen(!menuOpen);
+        setArrowUp(!arrowUp);
+    };
+
     return (
-
         <PageContainerTopo>
-
             <h1>linkr</h1>
-
             <SearchBarWrapper>
                 <SearchBar />
-            </SearchBarWrapper>  
-
+            </SearchBarWrapper>
             <Container>
-
-                <FiChevronDown color="white" size={50} cursor= "pointer" />
+                <ArrowButton onClick={toggleMenu}>
+                    {arrowUp ? <FiChevronUp color="white" size={24} /> : <FiChevronDown color="white" size={24} />}
+                </ArrowButton>
                 <img data-test="avatar" src={localStorage.getItem('url')} alt="url" />
-
+                {menuOpen && (
+                    <DropdownMenu data-test="menu">
+                        <MenuItem data-test="logout" onClick={() => logout()}>Logout</MenuItem>
+                    </DropdownMenu>
+                )}
             </Container>
-
-
         </PageContainerTopo>
-
-    )
+    );
 }
 
 const PageContainerTopo = styled.div`
@@ -76,4 +86,36 @@ const SearchBarWrapper = styled.div`
     @media (max-width: 767px) {
         display: none;
     }
+`;
+
+const ArrowButton = styled.div`
+    cursor: pointer;
+`;
+
+const DropdownMenu = styled.div`
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    width: 150px;
+    height: 43px;
+    border-radius: 0px 0px 20px 20px;
+    background-color: #171717;
+    &:hover {
+        background-color: gray;
+    }
+`;
+
+const MenuItem = styled.div`
+    font-family: Lato;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 18px;
+    letter-spacing: 0.05em;
+    color: #FFFFFF;
+    text-align: center;
+    padding: 10px 20px;
+    cursor: pointer;
 `;

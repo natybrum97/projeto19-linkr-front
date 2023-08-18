@@ -3,11 +3,20 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import SearchBar from "../components/SearchBar";
+import { useContext } from "react";
+import { LoginContext } from "../contexts/LoginContext";
 
 const HashtagPosts = () => {
+  
   const [posts, setPosts] = useState(null);
 
   const { hashtag } = useParams();
+
+  const { isLoged } = useContext(LoginContext);
+
+  useEffect(() => {
+    isLoged();
+  })
 
   const getPosts = async () => {
     try {

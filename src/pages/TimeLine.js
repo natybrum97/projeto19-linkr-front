@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
+import { useContext } from "react";
+import { LoginContext } from "../contexts/LoginContext";
 
 const TimeLine = () => {
   const [postInput, setPostInput] = useState({
@@ -12,9 +14,16 @@ const TimeLine = () => {
 
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState(null);
+
+  const { isLoged } = useContext(LoginContext);
+
+  useEffect(() => {
+    isLoged();
+  })
+
   const getPosts = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API_URI}/post`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post`);
       setPosts(data);
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
