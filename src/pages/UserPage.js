@@ -42,9 +42,9 @@ export default function UserPage() {
 
       <Container>
         {posts === null ? (
-          <h2>Loading...</h2>
+          <h3>Loading...</h3>
         ) : posts === undefined ? (
-          <h2>404 Not Found</h2>
+          <h3>404 Not Found</h3>
         ) : (
           posts.userPosts.length >= 0 && (
             <>
@@ -57,21 +57,21 @@ export default function UserPage() {
 
       {posts !== null && posts !== undefined && posts.userPosts.length > 0 ? (
         <ul>
-          {posts.userPosts.map((p) => ( <li key={p.id}>post aqui</li> // provisório até conseguir fazer os posts aparecer
-            // <Post
-            //   key={p.id}
-            //   id={p.id}
-            //   postUrl={p.postUrl}
-            //   postText={p.postText}
-            //   name={posts.user.name}
-            //   pictureUrl={posts.user.pictureUrl}
-            // />
+          {posts.userPosts.map((p) => ( // <li key={p.id}>post aqui</li> // provisório até conseguir fazer os posts aparecer
+            <Post
+              key={p.id}
+              id={p.id}
+              postUrl={p.postUrl}
+              postText={p.postText}
+              name={posts.user.name}
+              pictureUrl={posts.user.pictureUrl}
+            />
           ))}
         </ul>
       ) : (
         posts !== null &&
         posts !== undefined &&
-        posts.userPosts.length === 0 && <h2>No Posts Yet</h2>
+        posts.userPosts.length === 0 && <h3>No Posts Yet</h3>
       )}
     </UserTimeLine>
   );
@@ -117,14 +117,14 @@ const UserTimeLine = styled.div`
   gap: 10px;
 
   h1,
-  h2 {
+  h3 {
     font-size: 40px;
     font-weight: 700;
     font-family: Oswald;
     color: #fff;
   }
 
-  h2 {
+  h3 {
     height: 300px;
     display: flex;
     align-items: center;

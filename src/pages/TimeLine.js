@@ -40,7 +40,6 @@ const TimeLine = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      //OBS: POR ENQUANTO ESTOU USANDO UM TOKEN FIXO DE TESTES
       await axios.post(`${process.env.REACT_APP_API_URL}/post`, postInput, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -110,8 +109,15 @@ const TimeLine = () => {
 
         {posts !== null && posts.length > 0 && (
           <ul>
-            {posts.map((post) => (
-              <Post post={post} key={post.id} />
+            {posts.map((p) => (
+              <Post
+              key={p.id}
+              id={p.id}
+              postUrl={p.postUrl}
+              postText={p.postText}
+              name={p.user.name}
+              pictureUrl={p.user.pictureUrl}
+            />
             ))}
           </ul>
         )}

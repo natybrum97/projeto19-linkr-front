@@ -5,13 +5,12 @@ import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 
 const Post = ({
-  post: {
     id,
     postId = id,
     postUrl,
     postText,
-    user: { name, pictureUrl },
-  },
+    name, 
+    pictureUrl
 }) => {
   const [urlMetaData, setUrlMetaData] = useState({
     title: "",
