@@ -24,6 +24,8 @@ const isLoged = () => {
 const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("url");
+    localStorage.removeItem("userid");
     axios.defaults.headers.common['Authorization'] = "";
     navigate("/");
 }

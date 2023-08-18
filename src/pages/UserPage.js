@@ -1,7 +1,17 @@
 import { styled } from "styled-components";
 import SearchBar from "../components/SearchBar";
+import { useEffect } from "react";
+import { useContext } from "react";
+import { LoginContext } from "../contexts/LoginContext";
 
 export default function UserPage() {
+
+  const { isLoged } = useContext(LoginContext);
+
+  useEffect(() => {
+    isLoged();
+  })
+
   return (
     <UserTimeLine>
       
