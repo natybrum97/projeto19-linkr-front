@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { styled } from "styled-components";
 import { Link } from "react-router-dom";
+import { styled } from "styled-components";
 
 const Post = ({
   post: {
@@ -34,8 +34,25 @@ const Post = ({
       console.log(`${status} ${statusText}\n${message}`);
     }
   };
+  const [renderBoldHashtags, setBoldHashTags] = useState(null);
+  const changeBoldHashTags = () => {
+    setBoldHashTags(() => {
+      return postText?.split(" ").map((word, i) => {
+        if (word[0] === "#") {
+          return (
+            <StyledLink key={i} to={`/hashtag/${word.replace("#", "")}`}>
+              <strong> {word} </strong>
+            </StyledLink>
+          );
+        } else {
+          return <span key={i}> {word} </span>;
+        }
+      });
+    });
+  };
   useEffect(() => {
     fetchMetaData();
+    changeBoldHashTags();
   }, []);
 
   const [isLiked, setIsLiked] = useState(false);
@@ -49,7 +66,7 @@ const Post = ({
     const fetchLikeCount = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URI}/likes/${postId}`
+          `${process.env.REACT_APP_API_URL}/likes/${postId}`
         );
         const data = response.data;
 
@@ -67,7 +84,7 @@ const Post = ({
     const fetchUserLikedStatus = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URI}/likes/${postId}`
+          `${process.env.REACT_APP_API_URL}/likes/${postId}`
         );
         const data = response.data;
         const userLiked = data.usersLiked.some(
@@ -87,7 +104,7 @@ const Post = ({
   const handleLikeClick = async () => {
     try {
       await axios.post(
-        `${process.env.REACT_APP_API_URI}/like`,
+        `${process.env.REACT_APP_API_URL}/like`,
         {
           postId: postId,
           userId: userId,
@@ -108,7 +125,7 @@ const Post = ({
   const handleUnlikeClick = async () => {
     try {
       await axios.post(
-        `${process.env.REACT_APP_API_URI}/unlike`,
+        `${process.env.REACT_APP_API_URL}/unlike`,
         {
           postId: postId,
           userId: userId,
@@ -124,22 +141,6 @@ const Post = ({
     } catch (error) {
       console.error("Erro ao descurtir o post:", error);
     }
-  };
-
-  const textPost = postText.split(" ");
-
-  const renderBoldHashtags = () => {
-    return textPost.map((word, i) => {
-      if (word[0] === "#") {
-        return (
-          <StyledLink to={`/hashtag/${word.replace("#", "")}`}>
-            <strong key={i}> {word} </strong>
-          </StyledLink>
-        );
-      } else {
-        return <span key={i}> {word} </span>;
-      }
-    });
   };
 
   return (
@@ -167,7 +168,7 @@ const Post = ({
       </PostInfo>
       <PostText>
         <h2>{name}</h2>
-        <p>{renderBoldHashtags()}</p>
+        <p>{renderBoldHashtags}</p>
       </PostText>
       <Snippet onClick={() => window.open(postUrl)}>
         <div>

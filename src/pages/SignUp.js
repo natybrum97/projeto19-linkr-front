@@ -35,7 +35,6 @@ export default function SignUpPage() {
             setEnviado(false);
             console.log(erro.response.data);
             alert(erro.response.data.message || erro.response.data);
-
         });
 
     }
@@ -55,10 +54,10 @@ export default function SignUpPage() {
                 <form onSubmit={sendInformations}>
 
 
-                    <input data-test="email" placeholder="e-mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    <input data-test="password" placeholder="password" type="password" autoComplete="new-password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    <input data-test="username" placeholder="username" type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-                    <input data-test="picture-url" placeholder="picture url" type="text" id="picture" value={url} onChange={(e) => setUrl(e.target.value)} />
+                    <input data-test="email" placeholder="e-mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                    <input data-test="password" placeholder="password" type="password" autoComplete="new-password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                    <input data-test="username" placeholder="username" type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                    <input data-test="picture-url" placeholder="picture url" type="text" id="picture" value={url} onChange={(e) => setUrl(e.target.value)} required />
                     <button data-test="sign-up-btn" type="submit" disabled={enviado}>Sign Up</button>
 
                 </form>

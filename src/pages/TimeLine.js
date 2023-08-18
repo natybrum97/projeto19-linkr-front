@@ -50,7 +50,7 @@ const TimeLine = () => {
     setLoading(true);
     try {
       //OBS: POR ENQUANTO ESTOU USANDO UM TOKEN FIXO DE TESTES
-      await axios.post(`${process.env.REACT_APP_API_URI}/post`, postInput, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/post`, postInput, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
