@@ -220,12 +220,7 @@ const Post = ({ id, postId = id, postUrl, postText, name, pictureUrl }) => {
         <h2 data-test="username">{name}</h2>
         <p data-test="description">{renderBoldHashtags}</p>
       </PostText>
-      <Snippet
-        to={postUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        data-test="link"
-      >
+      <Snippet to={postUrl} target="_blank" rel="noopener noreferrer" data-test="link">
         <div>
           <h1>{urlMetaData.title}</h1>
           <h2>{urlMetaData.description}</h2>
@@ -279,7 +274,7 @@ const Snippet = styled(Link)`
     min-width: 416px;
     max-width: 416px;
     height: 155px;
-  }
+  };
   text-decoration: none;
   cursor: pointer;
   position: absolute;
