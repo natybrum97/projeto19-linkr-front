@@ -44,8 +44,8 @@ export default function Login() {
         <GlobalStyle />
 
         <form onSubmit={sendInformations}>
-          <input data-test="email" placeholder="e-mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input data-test="password" placeholder="password" type="password" autoComplete="new-password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input data-test="email" placeholder="e-mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input data-test="password" placeholder="password" type="password" autoComplete="new-password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
           <button data-test="login-btn" type="submit" disabled={enviado}>Log In</button>
         </form>
 

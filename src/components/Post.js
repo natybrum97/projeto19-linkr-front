@@ -1,18 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { styled } from "styled-components";
 import { Link } from "react-router-dom";
+import { styled } from "styled-components";
 
-const Post = ({
-  post: {
-    id,
-    postId = id,
-    postUrl,
-    postText,
-    user: { name, pictureUrl },
-  },
-}) => {
+const Post = ({ id, postId = id, postUrl, postText, name, pictureUrl }) => {
   const [urlMetaData, setUrlMetaData] = useState({
     title: "",
     description: "",
@@ -34,8 +26,25 @@ const Post = ({
       console.log(`${status} ${statusText}\n${message}`);
     }
   };
+  const [renderBoldHashtags, setBoldHashTags] = useState(null);
+  const changeBoldHashTags = () => {
+    setBoldHashTags(() => {
+      return postText?.split(" ").map((word, i) => {
+        if (word[0] === "#") {
+          return (
+            <StyledLink key={i} to={`/hashtag/${word.replace("#", "")}`}>
+              <strong> {word} </strong>
+            </StyledLink>
+          );
+        } else {
+          return <span key={i}> {word} </span>;
+        }
+      });
+    });
+  };
   useEffect(() => {
     fetchMetaData();
+    changeBoldHashTags();
   }, []);
 
   const [isLiked, setIsLiked] = useState(false);
@@ -161,24 +170,9 @@ const Post = ({
       console.error("Erro ao descurtir o post:", error);
     }
   };
-  const textPost = postText.split(" ");
-
-  const renderBoldHashtags = () => {
-    return textPost.map((word, i) => {
-      if (word[0] === "#") {
-        return (
-          <StyledLink to={`/hashtag/${word.replace("#", "")}`}>
-            <strong key={i}> {word} </strong>
-          </StyledLink>
-        );
-      } else {
-        return <span key={i}> {word} </span>;
-      }
-    });
-  };
 
   return (
-    <StyledPost>
+    <StyledPost data-test="post">
       <PostInfo>
         <div>
           <img src={pictureUrl} alt="pictureUrl" />
@@ -223,10 +217,15 @@ const Post = ({
       </PostInfo>
 
       <PostText>
-        <h2>{name}</h2>
-        <p>{renderBoldHashtags()}</p>
+        <h2 data-test="username">{name}</h2>
+        <p data-test="description">{renderBoldHashtags}</p>
       </PostText>
-      <Snippet onClick={() => window.open(postUrl)}>
+      <Snippet
+        to={postUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-test="link"
+      >
         <div>
           <h1>{urlMetaData.title}</h1>
           <h2>{urlMetaData.description}</h2>
@@ -275,12 +274,13 @@ const LikesTooltip = styled.div`
   }
 `;
 
-const Snippet = styled.div`
+const Snippet = styled(Link)`
   @media (min-width: 1200px) {
     min-width: 416px;
     max-width: 416px;
     height: 155px;
   }
+  text-decoration: none;
   cursor: pointer;
   position: absolute;
   height: 115px;
