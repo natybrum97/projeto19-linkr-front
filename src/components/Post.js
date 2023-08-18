@@ -144,7 +144,7 @@ const Post = ({
   };
 
   return (
-    <StyledPost>
+    <StyledPost data-test="post">
       <PostInfo>
         <div>
           <img src={pictureUrl} alt="pictureUrl" />
@@ -167,10 +167,10 @@ const Post = ({
         <p>{likeCount} likes</p>
       </PostInfo>
       <PostText>
-        <h2>{name}</h2>
-        <p>{renderBoldHashtags}</p>
+        <h2 data-test="username">{name}</h2>
+        <p data-test="description">{renderBoldHashtags}</p>
       </PostText>
-      <Snippet onClick={() => window.open(postUrl)}>
+      <Snippet onClick={() => window.open(postUrl)} data-test="link">
         <div>
           <h1>{urlMetaData.title}</h1>
           <h2>{urlMetaData.description}</h2>

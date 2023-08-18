@@ -1,9 +1,8 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { styled } from "styled-components";
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
-import { useContext } from "react";
 import { LoginContext } from "../contexts/LoginContext";
 
 const TimeLine = () => {
