@@ -13,6 +13,7 @@ const HashtagPosts = () => {
     try {
       const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post`);
       setPosts(data);
+      console.log(data);
     } catch ({
       response: {
         status,
