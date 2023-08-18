@@ -47,7 +47,7 @@ export default function UserPage() {
           posts.userPosts.length >= 0 && (
             <>
               <img src={posts.user.pictureUrl} alt="profilePicture" />
-              <h1>{posts.user.name}</h1>
+              <h1>{posts.user.name}’s posts</h1>
             </>
           )
         )}
@@ -55,7 +55,7 @@ export default function UserPage() {
 
       {posts !== null && posts !== undefined && posts.userPosts.length > 0 ? (
         <ul>
-          {posts.userPosts.map((p) => ( // <li key={p.id}>post aqui</li> // provisório até conseguir fazer os posts aparecer
+          {posts.userPosts.map((p) => (
             <Post
               key={p.id}
               id={p.id}
