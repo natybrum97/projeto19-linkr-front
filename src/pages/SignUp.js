@@ -20,11 +20,6 @@ export default function SignUpPage() {
 
         setEnviado(true);
 
-        if (!email || !password || !username || !url) {
-          alert('Please fill in all the fields.');
-          return;
-      }
-
         const obj = {
             email,
             password,
@@ -40,7 +35,6 @@ export default function SignUpPage() {
             setEnviado(false);
             console.log(erro.response.data);
             alert(erro.response.data.message || erro.response.data);
-            navigate("/");
 
         });
 
