@@ -28,8 +28,6 @@ export default function UserPage() {
     promise.catch((error) => console.log(error.response.data));
   }
 
-  console.log(posts);
-
   useEffect(() => {
     LoadPosts(authToken, id);
   }, [authToken, id]);
