@@ -16,30 +16,21 @@ export default function Login() {
 
     setEnviado(true);
 
-    if (!email || !password) {
-      alert('Please fill in all the fields.');
-      return;
-  }
-
     const obj = {
       email,
       password,
     };
 
-    const promise = axios.post(`${process.env.REACT_APP_API_URI}/signin`, obj);
-
-    promise.then((response) => {
+    axios.post(`${process.env.REACT_APP_API_URL}/signin`, obj).then((response) => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", response.data.username);
       localStorage.setItem("url", response.data.url);
       localStorage.setItem("userid", response.data.id);
       navigate("/timeline");
-    });
-
-    promise.catch((erro) => {
+    }).catch((erro) => {
       setEnviado(false);
-      alert("Invalid username and/or password!");
       console.log(erro.response.data);
+      alert(erro.response.data.message || erro.response.data);
     });
   }
 
@@ -53,8 +44,8 @@ export default function Login() {
         <GlobalStyle />
 
         <form onSubmit={sendInformations}>
-          <input data-test="email" placeholder="e-mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input data-test="password" placeholder="password" type="password" autoComplete="new-password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input data-test="email" placeholder="e-mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input data-test="password" placeholder="password" type="password" autoComplete="new-password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
           <button data-test="login-btn" type="submit" disabled={enviado}>Log In</button>
         </form>
 

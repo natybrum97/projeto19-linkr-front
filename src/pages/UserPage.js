@@ -4,8 +4,16 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import { useParams } from "react-router-dom";
 import Post from "../components/Post";
+import { useContext } from "react";
+import { LoginContext } from "../contexts/LoginContext";
 
 export default function UserPage() {
+  const { isLoged } = useContext(LoginContext);
+
+  useEffect(() => {
+    isLoged();
+  })
+  
   const authToken = localStorage.getItem("token");
   const { id } = useParams();
 

@@ -1,8 +1,9 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { styled } from "styled-components";
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
+import { LoginContext } from "../contexts/LoginContext";
 
 const TimeLine = () => {
   const [postInput, setPostInput] = useState({
@@ -12,22 +13,21 @@ const TimeLine = () => {
 
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState(null);
+
+  const { isLoged } = useContext(LoginContext);
+
+  useEffect(() => {
+    isLoged();
+  })
+
   const getPosts = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API_URI}/post`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post`);
       setPosts(data);
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
-    } catch ({
-      response: {
-        status,
-        statusText,
-        data: { message },
-      },
-    }) {
-      alert(
-        "An error occured while trying to fetch the posts, please refresh the page"
-      );
+    } catch (err) {
+      alert('An error occured while trying to fetch the posts, please refresh the page');
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
     }
@@ -41,20 +41,14 @@ const TimeLine = () => {
     setLoading(true);
     try {
       //OBS: POR ENQUANTO ESTOU USANDO UM TOKEN FIXO DE TESTES
-      await axios.post(`${process.env.REACT_APP_API_URI}/post`, postInput, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/post`, postInput, {
         headers: {
-          Authorization: `Bearer ${"9f74abd6-1bd9-4d03-8182-69e3283ca1e0"}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
       getPosts();
-    } catch ({
-      response: {
-        status,
-        statusText,
-        data: { message },
-      },
-    }) {
-      alert("Houve um erro ao publicar seu link");
+    } catch (err) {
+      alert("There was an error publishing your link");
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
     }
@@ -72,7 +66,7 @@ const TimeLine = () => {
           <div>
             <div>
               <img
-                src="https://i.pinimg.com/736x/cf/77/d2/cf77d222c2ae919cdd2f9fcdbb3e4906.jpg"
+                src={localStorage.getItem('url')}
                 alt="userImg"
               />
             </div>
@@ -109,9 +103,9 @@ const TimeLine = () => {
         </StyledPostForm>
 
         {posts === null ? (
-          <h4>Loading...</h4>
+          <h4 data-test="message">Loading...</h4>
         ) : (
-          posts.length === 0 && <h4>There are no posts yet</h4>
+          posts.length === 0 && <h4 data-test="message">There are no posts yet</h4>
         )}
 
         {posts !== null && posts.length > 0 && (
