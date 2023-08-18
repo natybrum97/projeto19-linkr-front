@@ -170,7 +170,7 @@ const Post = ({
         <h2 data-test="username">{name}</h2>
         <p data-test="description">{renderBoldHashtags}</p>
       </PostText>
-      <Snippet onClick={() => window.open(postUrl)} data-test="link">
+      <Snippet to={postUrl} target="_blank" rel="noopener noreferrer" data-test="link">
         <div>
           <h1>{urlMetaData.title}</h1>
           <h2>{urlMetaData.description}</h2>
@@ -203,12 +203,13 @@ const LikesTooltip = styled.div`
   }
 `;
 
-const Snippet = styled.div`
+const Snippet = styled(Link)`
   @media (min-width: 1200px) {
     min-width: 416px;
     max-width: 416px;
     height: 155px;
-  }
+  };
+  text-decoration: none;
   cursor: pointer;
   position: absolute;
   height: 115px;
