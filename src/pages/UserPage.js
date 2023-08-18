@@ -2,19 +2,25 @@ import { styled } from "styled-components";
 import SearchBar from "../components/SearchBar";
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { useParams } from "react-router-dom";
+import Post from "../components/Post";
 
 export default function UserPage() {
   const authToken = localStorage.getItem("token");
-  const id = 1;
+  const { id } = useParams();
 
   const [posts, setPosts] = useState(null);
 
   function LoadPosts(token, id) {
     const promise = api.getUserPost(token, id);
 
-    promise.then((response) => setPosts(response.data));
+    promise.then((response) => {
+      setPosts(response.data.userPosts);
+    });
     promise.catch((error) => console.log(error.response.data));
   }
+
+  console.log(posts);
 
   useEffect(() => {
     LoadPosts(authToken, id);
@@ -27,12 +33,38 @@ export default function UserPage() {
       </SearchBarWrapper>
 
       <Container>
-        <img
-          src="https://i.pinimg.com/736x/cf/77/d2/cf77d222c2ae919cdd2f9fcdbb3e4906.jpg"
-          alt="profile picture"
-        />
-        <h1>Juvenal Juvêncio’s posts</h1>
+        {posts === null ? (
+          <h2>Loading...</h2>
+        ) : posts === undefined ? (
+          <h2>404 Not Found</h2>
+        ) : (
+          posts.userPosts.length >= 0 && (
+            <>
+              <img src={posts.user.pictureUrl} alt="profilePicture" />
+              <h1>{posts.user.name}</h1>
+            </>
+          )
+        )}
       </Container>
+
+      {posts !== null && posts !== undefined && posts.userPosts.length > 0 ? (
+        <ul>
+          {posts.userPosts.map((p) => ( <li key={p.id}>post aqui</li> // provisório até conseguir fazer os posts aparecer
+            // <Post
+            //   key={p.id}
+            //   id={p.id}
+            //   postUrl={p.postUrl}
+            //   postText={p.postText}
+            //   name={posts.user.name}
+            //   pictureUrl={posts.user.pictureUrl}
+            // />
+          ))}
+        </ul>
+      ) : (
+        posts !== null &&
+        posts !== undefined &&
+        posts.userPosts.length === 0 && <h2>No Posts Yet</h2>
+      )}
     </UserTimeLine>
   );
 }
@@ -51,13 +83,6 @@ const Container = styled.div`
     border-radius: 50%;
     margin-left: 10px;
   }
-
-  h1 {
-    font-size: 40px;
-    font-weight: 700;
-    font-family: Oswald;
-    color: #fff;
-  }
 `;
 
 const SearchBarWrapper = styled.div`
@@ -75,12 +100,30 @@ const SearchBarWrapper = styled.div`
 
 const UserTimeLine = styled.div`
   max-width: 100%;
+  min-height: calc(100vh - 90px);
   padding-top: 90px;
   background-color: #333333;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
+
+  h1,
+  h2 {
+    font-size: 40px;
+    font-weight: 700;
+    font-family: Oswald;
+    color: #fff;
+  }
+
+  h2 {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    font-size: 25px;
+    margin-right: auto;
+    margin-left: auto;
+  }
 
   @media (max-width: 767px) {
     h1 {
