@@ -55,13 +55,7 @@ const TimeLine = () => {
         },
       });
       getPosts();
-    } catch ({
-      response: {
-        status,
-        statusText,
-        data: { message },
-      },
-    }) {
+    } catch (err) {
       alert("Houve um erro ao publicar seu link");
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
