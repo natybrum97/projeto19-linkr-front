@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { styled } from "styled-components";
 import { Link } from "react-router-dom";
+import { styled } from "styled-components";
 
 const Post = ({
   post: {
@@ -13,30 +13,12 @@ const Post = ({
     user: { name, pictureUrl },
   },
 }) => {
-  const [renderBoldHashtags, setBoldHashTags] = useState(null);
-
-  const textPost = postText.split(" ");
-
   const [urlMetaData, setUrlMetaData] = useState({
     title: "",
     description: "",
     image: undefined,
   });
   const fetchMetaData = async () => {
-    setBoldHashTags(() => {
-      return textPost.map((word, i) => {
-        if (word[0] === "#") {
-          return (
-            <StyledLink key={i} to={`/hashtag/${word.replace("#", "")}`}>
-              <strong> {word} </strong>
-            </StyledLink>
-          );
-        } else {
-          return <span key={i}> {word} </span>;
-        }
-      });
-    });
-
     try {
       const {
         data: { title, description, images },
@@ -52,8 +34,25 @@ const Post = ({
       console.log(`${status} ${statusText}\n${message}`);
     }
   };
+  const [renderBoldHashtags, setBoldHashTags] = useState(null);
+  const changeBoldHashTags = () => {
+    setBoldHashTags(() => {
+      return postText?.split(" ").map((word, i) => {
+        if (word[0] === "#") {
+          return (
+            <StyledLink key={i} to={`/hashtag/${word.replace("#", "")}`}>
+              <strong> {word} </strong>
+            </StyledLink>
+          );
+        } else {
+          return <span key={i}> {word} </span>;
+        }
+      });
+    });
+  };
   useEffect(() => {
     fetchMetaData();
+    changeBoldHashTags();
   }, []);
 
   const [isLiked, setIsLiked] = useState(false);
