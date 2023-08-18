@@ -53,7 +53,7 @@ const Post = ({
   useEffect(() => {
     fetchMetaData();
     changeBoldHashTags();
-  }, []);
+  });
 
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);

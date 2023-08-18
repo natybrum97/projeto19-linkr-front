@@ -10,23 +10,17 @@ export function LoginProvider({ children }) {
 
     const [token, setToken] = useState("");
 
-    const isLoged = () => {
-        let token = localStorage.getItem("token");
-        const currentPath = window.location.pathname;
 
-        console.log(token);
-    
-        if (token && (currentPath === "/" || currentPath === "/sign-up")) {
-            // Usuário já tem um token e está tentando acessar a página de login ou cadastro
-            navigate("/timeline"); // Substitua com a URL da página principal
-        } else if (token) {
-            // Usuário autenticado, permitir acesso normal
-            axios.defaults.headers.common['Authorization'] = token;
-            setToken(token);
-        } else {
-            navigate("/");
-        }
+const isLoged = () => {
+    let token = localStorage.getItem("token");
+
+    if(token){
+        axios.defaults.headers.common['Authorization'] = token;
+        setToken(token);
+    } else {
+        navigate("/");
     }
+}
 
 const logout = () => {
     localStorage.removeItem("token");
