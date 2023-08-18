@@ -41,9 +41,32 @@ const Post = ({
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [showLikesTooltip, setShowLikesTooltip] = useState(false);
+  const [usernames, setUsernames] = useState([]);
+  const [likeActionDone, setLikeActionDone] = useState(false);
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userid");
+  const nick = localStorage.getItem("user");
+
+  useEffect(() => {
+    const fetchUserLikedStatus = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/likes/${postId}`
+        );
+        const data = response.data;
+
+        if (data.usersLiked.length > 0) {
+          const usernames = data.usersLiked.map((user) => user.username);
+          setUsernames(usernames);
+        }
+      } catch (error) {
+        console.error("Erro ao obter os usernames de quem curtiu:", error);
+      }
+    };
+
+    fetchUserLikedStatus();
+  }, [postId]);
 
   useEffect(() => {
     const fetchLikeCount = async () => {
@@ -57,7 +80,7 @@ const Post = ({
 
         if (data.usersLiked.length > 0) {
           const usernames = data.usersLiked.map((user) => user.username);
-          console.log(usernames);
+          setUsernames(usernames);
         }
       } catch (error) {
         console.error("Erro ao obter a contagem de curtidas:", error);
@@ -75,14 +98,25 @@ const Post = ({
         );
         setIsLiked(userLiked);
         setLikeCount(data.likesCount);
+        if (!userLiked) {
+          // Remove o nome da lista de usernames caso não tenha curtido
+          setUsernames((prevUsernames) =>
+            prevUsernames.filter((username) => username !== nick)
+          );
+        }
       } catch (error) {
         console.error("Erro ao obter a contagem de curtidas:", error);
       }
     };
 
-    fetchLikeCount();
+    if (likeActionDone) {
+      fetchLikeCount(); // Atualiza a lista de usernames
+      fetchUserLikedStatus(); // Atualiza o status de curtida do usuário
+      setLikeActionDone(false); // Reseta o estado da ação
+    }
+
     fetchUserLikedStatus();
-  }, [postId, userId]);
+  }, [postId, userId, likeActionDone, nick]);
 
   const handleLikeClick = async () => {
     try {
@@ -100,6 +134,7 @@ const Post = ({
       );
       setIsLiked(true);
       setLikeCount(likeCount + 1);
+      setLikeActionDone(true); // Atualiza o estado após a ação
     } catch (error) {
       console.error("Erro ao curtir o post:", error);
     }
@@ -121,11 +156,11 @@ const Post = ({
       );
       setIsLiked(false);
       setLikeCount(likeCount - 1);
+      setLikeActionDone(true); // Atualiza o estado após a ação
     } catch (error) {
       console.error("Erro ao descurtir o post:", error);
     }
   };
-
   const textPost = postText.split(" ");
 
   const renderBoldHashtags = () => {
@@ -148,23 +183,45 @@ const Post = ({
         <div>
           <img src={pictureUrl} alt="pictureUrl" />
         </div>
-        {isLiked ? (
-          <StyledFilledHeart
-            onMouseEnter={() => setShowLikesTooltip(true)}
-            onMouseLeave={() => setShowLikesTooltip(false)}
-            onClick={handleUnlikeClick}
-          />
-        ) : (
-          <StyledHeart onClick={handleLikeClick} />
-        )}
-        {showLikesTooltip && (
-          <LikesTooltip>
-            <div>Kaio</div>
-          </LikesTooltip>
-        )}
-
+        <div>
+          {isLiked ? (
+            <StyledFilledHeart
+              onClick={handleUnlikeClick}
+              onMouseEnter={() => setShowLikesTooltip(true)}
+              onMouseLeave={() => setShowLikesTooltip(false)}
+            />
+          ) : (
+            <StyledHeart
+              onClick={handleLikeClick}
+              onMouseEnter={() => setShowLikesTooltip(true)}
+              onMouseLeave={() => setShowLikesTooltip(false)}
+            />
+          )}
+          {showLikesTooltip && (
+            <LikesTooltip>
+              {usernames.length === 0 ? (
+                <div>Seja o primeiro a curtir isto</div>
+              ) : (
+                usernames.slice(0, 2).map((username, index) => (
+                  <div key={index}>
+                    {index === 0 && username === nick ? "Você" : username}
+                    {index === 0 && usernames.length === 1 ? " curtiu" : ""}
+                    {index === 0 && usernames.length > 1 ? "," : ""}
+                    {index === 1 && usernames.length === 2 ? " curtiu" : ""}
+                  </div>
+                ))
+              )}
+              {usernames.length > 2
+                ? ` e mais ${usernames.length - 2} pessoa${
+                    usernames.length - 2 > 1 ? "s" : ""
+                  } `
+                : ""}
+            </LikesTooltip>
+          )}
+        </div>
         <p>{likeCount} likes</p>
       </PostInfo>
+
       <PostText>
         <h2>{name}</h2>
         <p>{renderBoldHashtags()}</p>
@@ -189,16 +246,32 @@ export default Post;
 
 const LikesTooltip = styled.div`
   position: absolute;
-  top: -40px;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 5px;
-  border-radius: 5px;
+  bottom: calc(30% + 30px);
+  left: 7%;
+  transform: translateX(-50%);
+  width: 50% !important;
+  height: 20% !important;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 3px;
   display: flex;
-  gap: 5px;
-  div {
-    white-space: nowrap;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  white-space: nowrap;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: 40%;
+    transform: translateX(-50%);
+
+    transform: rotate(180deg);
+    border-width: 10px;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.9) transparent transparent transparent;
   }
 `;
 
