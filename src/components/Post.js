@@ -13,12 +13,30 @@ const Post = ({
     user: { name, pictureUrl },
   },
 }) => {
+  const [renderBoldHashtags, setBoldHashTags] = useState(null);
+
+  const textPost = postText.split(" ");
+
   const [urlMetaData, setUrlMetaData] = useState({
     title: "",
     description: "",
     image: undefined,
   });
   const fetchMetaData = async () => {
+    setBoldHashTags(() => {
+      return textPost.map((word, i) => {
+        if (word[0] === "#") {
+          return (
+            <StyledLink key={i} to={`/hashtag/${word.replace("#", "")}`}>
+              <strong> {word} </strong>
+            </StyledLink>
+          );
+        } else {
+          return <span key={i}> {word} </span>;
+        }
+      });
+    });
+
     try {
       const {
         data: { title, description, images },
@@ -126,22 +144,6 @@ const Post = ({
     }
   };
 
-  const textPost = postText.split(" ");
-
-  const renderBoldHashtags = () => {
-    return textPost.map((word, i) => {
-      if (word[0] === "#") {
-        return (
-          <StyledLink to={`/hashtag/${word.replace("#", "")}`}>
-            <strong key={i}> {word} </strong>
-          </StyledLink>
-        );
-      } else {
-        return <span key={i}> {word} </span>;
-      }
-    });
-  };
-
   return (
     <StyledPost>
       <PostInfo>
@@ -167,7 +169,7 @@ const Post = ({
       </PostInfo>
       <PostText>
         <h2>{name}</h2>
-        <p>{renderBoldHashtags()}</p>
+        <p>{renderBoldHashtags}</p>
       </PostText>
       <Snippet onClick={() => window.open(postUrl)}>
         <div>
