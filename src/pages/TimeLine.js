@@ -56,7 +56,7 @@ const TimeLine = () => {
       });
       getPosts();
     } catch (err) {
-      alert("There was an error publishing you link");
+      alert("There was an error publishing your link");
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
     }
