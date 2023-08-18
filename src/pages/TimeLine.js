@@ -26,10 +26,10 @@ const TimeLine = () => {
     try {
       const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post`);
 
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/trending`);
-      console.log("resposta: ", res.data);
+      // const res = await axios.get(`${process.env.REACT_APP_API_URL}/trending`);
+      // console.log("resposta: ", res.data);
 
-      setTrending(res.data);
+      // setTrending(res.data);
       setPosts(data);
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
