@@ -26,7 +26,7 @@ export default function Header() {
                 <ArrowButton onClick={toggleMenu}>
                     {arrowUp ? <FiChevronUp color="white" size={24} /> : <FiChevronDown color="white" size={24} />}
                 </ArrowButton>
-                <img data-test="avatar" src={localStorage.getItem('url')} alt="url" />
+                <img data-test="avatar" onClick={toggleMenu} src={localStorage.getItem('url')} alt="url" />
                 {menuOpen && (
                     <DropdownMenu data-test="menu">
                         <MenuItem data-test="logout" onClick={() => logout()}>Logout</MenuItem>
