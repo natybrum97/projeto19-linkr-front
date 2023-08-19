@@ -63,6 +63,7 @@ export default function UserPage() {
               postText={p.postText}
               name={posts.user.name}
               pictureUrl={posts.user.pictureUrl}
+              userPageId={posts.user.id}
             />
           ))}
         </ul>

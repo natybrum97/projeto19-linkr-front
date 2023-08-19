@@ -10,7 +10,8 @@ const Post = ({
     postUrl,
     postText,
     name, 
-    pictureUrl
+    pictureUrl,
+    userPageId
 }) => {
   const [urlMetaData, setUrlMetaData] = useState({
     title: "",
@@ -166,7 +167,7 @@ const Post = ({
         <p>{likeCount} likes</p>
       </PostInfo>
       <PostText>
-        <h2 data-test="username">{name}</h2>
+        <h2 data-test="username"><Link to={`/user/${userPageId}`}>{name}</Link></h2>
         <p data-test="description">{renderBoldHashtags}</p>
       </PostText>
       <Snippet to={postUrl} target="_blank" rel="noopener noreferrer" data-test="link">
