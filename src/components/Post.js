@@ -4,7 +4,15 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 
-const Post = ({ id, postId = id, postUrl, postText, name, pictureUrl }) => {
+const Post = ({
+    id,
+    postId = id,
+    postUrl,
+    postText,
+    name, 
+    pictureUrl,
+    userPageId
+}) => {
   const [urlMetaData, setUrlMetaData] = useState({
     title: "",
     description: "",
@@ -217,7 +225,7 @@ const Post = ({ id, postId = id, postUrl, postText, name, pictureUrl }) => {
       </PostInfo>
 
       <PostText>
-        <h2 data-test="username">{name}</h2>
+        <h2 data-test="username"><Link to={`/user/${userPageId}`}>{name}</Link></h2>
         <p data-test="description">{renderBoldHashtags}</p>
       </PostText>
       <Snippet to={postUrl} target="_blank" rel="noopener noreferrer" data-test="link">

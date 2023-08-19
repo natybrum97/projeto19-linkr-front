@@ -4,7 +4,7 @@ import { styled } from "styled-components";
 export default function SearchBar() {
   return (
     <Container>
-      <input type="search" placeholder="Search for people" />
+      <input data-test="search" type="search" placeholder="Search for people" />
       <FiSearch color="#C6C6C6" size={34} cursor="pointer" />
     </Container>
   );
