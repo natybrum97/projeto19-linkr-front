@@ -11,6 +11,8 @@ const TimeLine = () => {
     postText: "",
   });
 
+  const [hashtagsTrending, setTrending] = useState(null);
+
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState(null);
 
@@ -18,16 +20,23 @@ const TimeLine = () => {
 
   useEffect(() => {
     isLoged();
-  })
+  });
 
   const getPosts = async () => {
     try {
       const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post`);
+
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/trending`);
+      console.log("resposta: ", res.data);
+
+      setTrending(res.data);
       setPosts(data);
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
     } catch (err) {
-      alert('An error occured while trying to fetch the posts, please refresh the page');
+      alert(
+        "An error occured while trying to fetch the posts, please refresh the page"
+      );
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
     }
@@ -42,7 +51,7 @@ const TimeLine = () => {
     try {
       await axios.post(`${process.env.REACT_APP_API_URL}/post`, postInput, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       getPosts();
@@ -64,14 +73,12 @@ const TimeLine = () => {
         <StyledPostForm data-test="publish-box" onSubmit={(e) => submitPost(e)}>
           <div>
             <div>
-              <img
-                src={localStorage.getItem('url')}
-                alt="userImg"
-              />
+              <img src={localStorage.getItem("url")} alt="userImg" />
             </div>
             <p>What are you going to share today?</p>
           </div>
-          <input data-test="link"
+          <input
+            data-test="link"
             onChange={(e) =>
               setPostInput((previous) => ({
                 ...previous,
@@ -84,7 +91,8 @@ const TimeLine = () => {
             required
             disabled={loading}
           ></input>
-          <textarea data-test="description"
+          <textarea
+            data-test="description"
             onChange={(e) =>
               setPostInput((previous) => ({
                 ...previous,
@@ -104,24 +112,42 @@ const TimeLine = () => {
         {posts === null ? (
           <h4 data-test="message">Loading...</h4>
         ) : (
-          posts.length === 0 && <h4 data-test="message">There are no posts yet</h4>
+          posts.length === 0 && (
+            <h4 data-test="message">There are no posts yet</h4>
+          )
         )}
 
         {posts !== null && posts.length > 0 && (
           <ul>
             {posts.map((p) => (
               <Post
-              key={p.id}
-              id={p.id}
-              postUrl={p.postUrl}
-              postText={p.postText}
-              name={p.user.name}
-              pictureUrl={p.user.pictureUrl}
-            />
+                key={p.id}
+                id={p.id}
+                postUrl={p.postUrl}
+                postText={p.postText}
+                name={p.user.name}
+                pictureUrl={p.user.pictureUrl}
+              />
             ))}
           </ul>
         )}
       </div>
+
+      <StyledTrending>
+        {hashtagsTrending === null ? (
+          <h4>Loading...</h4>
+        ) : (
+          hashtagsTrending.length === 0 && <h4>There are no trends yet</h4>
+        )}
+
+        {hashtagsTrending !== null && posts.length > 0 && (
+          <ul>
+            {hashtagsTrending.map((trend, i) => (
+              <p key={i}>{trend.hashtagText}</p>
+            ))}
+          </ul>
+        )}
+      </StyledTrending>
     </StyledTimeLine>
   );
 };
@@ -318,4 +344,14 @@ const StyledPostForm = styled.form`
       opacity: 0.5;
     }
   }
+`;
+
+const StyledTrending = styled.div`
+  margin-top: 72px;
+  background-color: #171717;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 10px;
 `;
