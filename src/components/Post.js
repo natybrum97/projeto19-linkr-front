@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
@@ -35,10 +35,19 @@ const Post = ({
       console.log(`${status} ${statusText}\n${message}`);
     }
   };
+  const [ifEdited, setIfEdited] = useState(0);
+  const [editedPostText, setEditedPostText] = useState(postText);
   const [renderBoldHashtags, setBoldHashTags] = useState(null);
   const changeBoldHashTags = () => {
     setBoldHashTags(() => {
-      return postText?.split(" ").map((word, i) => {
+      let string;
+      if (ifEdited !== 0) {
+        string = editedPostText;
+      } else {
+        string = postText;
+      }
+
+      return string?.split(" ").map((word, i) => {
         if (word[0] === "#") {
           return (
             <StyledLink key={i} to={`/hashtag/${word.replace("#", "")}`}>
@@ -54,7 +63,7 @@ const Post = ({
   useEffect(() => {
     fetchMetaData();
     changeBoldHashTags();
-  }, []);
+  }, [ifEdited]);
 
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
@@ -180,13 +189,50 @@ const Post = ({
     }
   };
 
+  const editPostRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [openEditPost, setOpenEditPost] = useState(false);
+  const editPost = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      await axios.put(`${process.env.REACT_APP_API_URL}/post/${id}`, { postUrl, postText: editedPostText }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setOpenEditPost(false);
+      setLoading(false);
+      setIfEdited(previous => previous + 1);
+    } catch (err) {
+      alert('não foi possível salvar as alterações');
+      setLoading(false);
+    }
+  };
+  const enableEdit = () => {
+    setOpenEditPost(previous => !previous); 
+    setTimeout(() => {
+      if (!openEditPost) editPostRef.current.focus();
+    }, 1);
+  };  
+  useEffect(() => {
+    const cancelEdit = (e) => {
+      if (e.key === 'Escape') setOpenEditPost(false);
+    };
+    window.addEventListener('keydown', cancelEdit);
+    return () => {
+      window.removeEventListener('keydown', cancelEdit);
+    };
+  }, []);
+
   return (
     <StyledPost data-test="post">
     {parseInt(userId) === userIdfromPost 
       && 
         <>
           <StyledTrash onClick={() => alert(`deletar post de id ${id}`)}/> 
-          <StyledEdit onClick={() => alert(`editar post de id ${id}`)}/>
+          <StyledEdit onClick={enableEdit}/>
         </>
     }
       <PostInfo>
@@ -234,7 +280,18 @@ const Post = ({
 
       <PostText>
         <h2 data-test="username"><Link to={`/user/${userIdfromPost}`}>{name}</Link></h2>
-        <p data-test="description">{renderBoldHashtags}</p>
+        {!openEditPost 
+          ? <p data-test="description">{renderBoldHashtags}</p> 
+          : <form onSubmit={e => {editPost(e)}}><input 
+              onChange={e => setEditedPostText(e.target.value)} 
+              value={editedPostText} 
+              disabled={loading}
+              type="text"
+              ref={editPostRef}
+              tabIndex={0}
+            >
+            </input></form>
+        }
       </PostText>
       <Snippet to={postUrl} target="_blank" rel="noopener noreferrer" data-test="link">
         <div>
@@ -466,9 +523,30 @@ const PostText = styled.div`
     line-height: 18px;
     color: #b7b7b7;
   }
-
   strong {
     font-weight: 700;
+  }
+  form{
+    width: 92%;
+    align-self: flex-start;
+    @media (min-width: 1200px) {
+      width: 94.75%;
+    }
+    input{
+      margin-top: 3px;
+      width: 100%;
+      height: 38px;
+      border-radius: 7px;
+      border: none;
+      color: #4C4C4C;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 17px;
+      padding-left: 4px;
+      &:disabled{
+        opacity: 0.5;
+      }
+    }
   }
 `;
 
