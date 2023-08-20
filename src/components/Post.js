@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { styled } from "styled-components";
 
 const Post = ({
@@ -14,6 +14,9 @@ const Post = ({
     name, 
     pictureUrl
 }) => {
+
+  const {pathname} = useLocation();
+
   const [urlMetaData, setUrlMetaData] = useState({
     title: "",
     description: "",
@@ -241,13 +244,13 @@ const Post = ({
         </div>
         <div>
           {isLiked ? (
-            <StyledFilledHeart
+            <StyledFilledHeart pathname={pathname.slice(1, 5)}
               onClick={handleUnlikeClick}
               onMouseEnter={() => setShowLikesTooltip(true)}
               onMouseLeave={() => setShowLikesTooltip(false)}
             />
           ) : (
-            <StyledHeart
+            <StyledHeart pathname={pathname.slice(1, 5)}
               onClick={handleLikeClick}
               onMouseEnter={() => setShowLikesTooltip(true)}
               onMouseLeave={() => setShowLikesTooltip(false)}
@@ -551,6 +554,8 @@ const PostText = styled.div`
 `;
 
 const StyledHeart = styled(AiOutlineHeart)`
+  position: ${({ pathname }) => pathname === 'user' ? 'absolute' : 'unset'};
+  left: 23px;
   cursor: pointer;
   margin-top: 10px;
   margin-bottom: 6px;
@@ -563,6 +568,8 @@ const StyledHeart = styled(AiOutlineHeart)`
 `;
 
 const StyledFilledHeart = styled(AiFillHeart)`
+  position: ${({ pathname }) => pathname === 'user' ? 'absolute' : 'unset'};
+  left: 23px;
   cursor: pointer;
   margin-top: 10px;
   margin-bottom: 6px;
