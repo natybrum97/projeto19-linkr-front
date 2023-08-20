@@ -1,11 +1,10 @@
-import { styled } from "styled-components";
-import SearchBar from "../components/SearchBar";
-import { useEffect, useState } from "react";
-import api from "../services/api";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { styled } from "styled-components";
 import Post from "../components/Post";
-import { useContext } from "react";
+import SearchBar from "../components/SearchBar";
 import { LoginContext } from "../contexts/LoginContext";
+import api from "../services/api";
 
 export default function UserPage() {
   const { isLoged } = useContext(LoginContext);
@@ -61,9 +60,9 @@ export default function UserPage() {
               id={p.id}
               postUrl={p.postUrl}
               postText={p.postText}
+              userIdfromPost={posts.user.id}
               name={posts.user.name}
               pictureUrl={posts.user.pictureUrl}
-              userPageId={posts.user.id}
             />
           ))}
         </ul>

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { BsFillTrashFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -9,9 +10,9 @@ const Post = ({
     postId = id,
     postUrl,
     postText,
+    userIdfromPost,
     name, 
-    pictureUrl,
-    userPageId
+    pictureUrl
 }) => {
   const [urlMetaData, setUrlMetaData] = useState({
     title: "",
@@ -179,8 +180,11 @@ const Post = ({
     }
   };
 
+  console.log(userId, userIdfromPost);
+
   return (
     <StyledPost data-test="post">
+    {parseInt(userId) === userIdfromPost && <StyledTrash />}
       <PostInfo>
         <div>
           <img src={pictureUrl} alt="pictureUrl" />
@@ -225,7 +229,7 @@ const Post = ({
       </PostInfo>
 
       <PostText>
-        <h2 data-test="username"><Link to={`/user/${userPageId}`}>{name}</Link></h2>
+        <h2 data-test="username"><Link to={`/user/${userIdfromPost}`}>{name}</Link></h2>
         <p data-test="description">{renderBoldHashtags}</p>
       </PostText>
       <Snippet to={postUrl} target="_blank" rel="noopener noreferrer" data-test="link">
@@ -429,6 +433,10 @@ const PostText = styled.div`
   margin-left: 13px;
   display: flex;
   flex-direction: column;
+  a{
+    color: #ffffff;
+    text-decoration: none;
+  }
   h2 {
     align-self: flex-start;
     margin-top: 10px;
@@ -490,4 +498,18 @@ const StyledFilledHeart = styled(AiFillHeart)`
 const StyledLink = styled(Link)`
   text-decoration: none;
   color: white;
+`;
+
+const StyledTrash = styled(BsFillTrashFill)`
+  position: absolute;
+  color: white;
+  font-size: 16px;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  cursor: pointer;
+  &:hover{
+    color: red;
+    transition-duration: 400ms;
+  }
 `;
