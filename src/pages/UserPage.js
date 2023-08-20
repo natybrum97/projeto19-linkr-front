@@ -1,35 +1,27 @@
-import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
-import { LoginContext } from "../contexts/LoginContext";
 import api from "../services/api";
 
 export default function UserPage() {
-  const { isLoged } = useContext(LoginContext);
-
-  useEffect(() => {
-    isLoged();
-  })
-  
   const authToken = localStorage.getItem("token");
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [posts, setPosts] = useState(null);
 
   function LoadPosts(token, id) {
     const promise = api.getUserPost(token, id);
 
-    promise.then((response) => {
-      setPosts(response.data.userPosts);
-    });
-    promise.catch((error) => console.log(error.response.data));
+    promise.then((response) => setPosts(response.data.userPosts));
+    promise.catch((error) => error.response.status === 401 ? navigate("/") : console.log(error.response.data));
   }
 
   useEffect(() => {
     LoadPosts(authToken, id);
-  }, [authToken, id]);
+  });
 
   return (
     <UserTimeLine>
