@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { BsFillTrashFill } from "react-icons/bs";
+import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -184,7 +184,13 @@ const Post = ({
 
   return (
     <StyledPost data-test="post">
-    {parseInt(userId) === userIdfromPost && <StyledTrash />}
+    {parseInt(userId) === userIdfromPost 
+      && 
+        <>
+          <StyledTrash onClick={() => alert(`deletar post de id ${id}`)}/> 
+          <StyledEdit onClick={() => alert(`editar post de id ${id}`)}/>
+        </>
+    }
       <PostInfo>
         <div>
           <img src={pictureUrl} alt="pictureUrl" />
@@ -510,6 +516,21 @@ const StyledTrash = styled(BsFillTrashFill)`
   cursor: pointer;
   &:hover{
     color: red;
+    transition-duration: 400ms;
+  }
+`;
+
+const StyledEdit = styled(BsFillPencilFill)`
+  margin-right: 23px;
+  position: absolute;
+  color: white;
+  font-size: 16px;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  cursor: pointer;
+  &:hover{
+    color: green;
     transition-duration: 400ms;
   }
 `;
