@@ -180,8 +180,6 @@ const Post = ({
     }
   };
 
-  console.log(userId, userIdfromPost);
-
   return (
     <StyledPost data-test="post">
     {parseInt(userId) === userIdfromPost 
@@ -260,7 +258,7 @@ const LikesTooltip = styled.div`
   position: absolute;
   bottom: calc(30% + 30px);
   left: 7%;
-  transform: translateX(-50%);
+  transform: translateX(-45%);
   width: 50% !important;
   height: 20% !important;
   background: rgba(255, 255, 255, 0.9);

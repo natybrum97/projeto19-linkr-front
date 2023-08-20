@@ -39,9 +39,9 @@ export default function UserPage() {
 
       <Container>
         {posts === null ? (
-          <h3>Loading...</h3>
+          <h4>Loading...</h4>
         ) : posts === undefined ? (
-          <h3>404 Not Found</h3>
+          <h4>404 Not Found</h4>
         ) : (
           posts.userPosts.length >= 0 && (
             <>
@@ -115,14 +115,14 @@ const UserTimeLine = styled.div`
   gap: 10px;
 
   h1,
-  h3 {
+  h4 {
     font-size: 40px;
     font-weight: 700;
     font-family: Oswald;
     color: #fff;
   }
 
-  h3 {
+  h4 {
     height: 300px;
     display: flex;
     align-items: center;
@@ -131,9 +131,20 @@ const UserTimeLine = styled.div`
     margin-left: auto;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 1200px) {
     h1 {
       font-size: 30px;
+    }
+  }
+
+  ul {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    div{
+      width: 100%;
     }
   }
 `;
