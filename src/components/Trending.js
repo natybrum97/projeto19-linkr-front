@@ -10,9 +10,10 @@ export default function Trending() {
     const promise = axios.get(`${process.env.REACT_APP_API_URL}/trending`);
 
     promise.then((res) => {
-      setTrending(res.data);
+      console.log(res.data);
     });
     promise.catch((err) => {
+      console.log(err.response.data);
       alert(err.response.data.message);
     });
   }, []);
