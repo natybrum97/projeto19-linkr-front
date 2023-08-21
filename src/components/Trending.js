@@ -4,29 +4,26 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export default function Trending() {
-  const [hashtagsTrending, setTrending] = useState(null);
+  const [hashtagsTrending, setTrending] = useState([]);
 
   useEffect(() => {
     const promise = axios.get(`${process.env.REACT_APP_API_URL}/trending`);
 
     promise.then((res) => {
       setTrending(res.data);
-      console.log("resposta: ", res.data);
     });
     promise.catch((err) => {
       alert(err.response.data.message);
     });
   }, []);
 
-  if (!hashtagsTrending) {
-    <h2>There are no trends yet</h2>;
-  }
-
   return (
     <StyledTrending data-test="trending">
       <h2>trending</h2>
 
-      {hashtagsTrending !== null && (
+      {!hashtagsTrending || hashtagsTrending.length === 0 ? (
+        <h2>There are no trends yet</h2>
+      ) : (
         <StyledList>
           {hashtagsTrending.map((trend, i) => (
             <StyledLink
