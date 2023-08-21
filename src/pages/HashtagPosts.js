@@ -141,7 +141,6 @@ const StyledHashtagPosts = styled.div`
 `;
 
 const StyledDiv = styled.div`
-  background-color: yellow;
   align-items: flex-start;
   display: flex;
   flex-direction: column;

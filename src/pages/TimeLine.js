@@ -61,73 +61,79 @@ const TimeLine = () => {
       </SearchBarWrapper>
 
       <h1>timeline</h1>
-      <StyledLeftTimeline>
-        <StyledPostForm data-test="publish-box" onSubmit={(e) => submitPost(e)}>
-          <div>
-            <div>
-              <img src={localStorage.getItem("url")} alt="userImg" />
-            </div>
-            <p>What are you going to share today?</p>
-          </div>
-          <input
-            data-test="link"
-            onChange={(e) =>
-              setPostInput((previous) => ({
-                ...previous,
-                postUrl: e.target.value,
-              }))
-            }
-            type="url"
-            placeholder="http://..."
-            value={postInput.postUrl}
-            required
-            disabled={loading}
-          ></input>
-          <textarea
-            data-test="description"
-            onChange={(e) =>
-              setPostInput((previous) => ({
-                ...previous,
-                postText: e.target.value,
-              }))
-            }
-            type="text"
-            placeholder="Awesome article about #javascript"
-            value={postInput.postText}
-            disabled={loading}
-          ></textarea>
-          <button data-test="publish-btn" disabled={loading}>
-            {loading ? "Publishing..." : "Publish"}
-          </button>
-        </StyledPostForm>
 
-        {posts === null ? (
-          <h4 data-test="message">Loading...</h4>
-        ) : (
-          posts.length === 0 && (
-            <h4 data-test="message">There are no posts yet</h4>
-          )
-        )}
+      <StyledContainer>
+        <StyledLeftTimeline>
+          <StyledPostForm
+            data-test="publish-box"
+            onSubmit={(e) => submitPost(e)}
+          >
+            <StyledDiv>
+              <div>
+                <img src={localStorage.getItem("url")} alt="userImg" />
+              </div>
+              <p>What are you going to share today?</p>
+            </StyledDiv>
+            <input
+              data-test="link"
+              onChange={(e) =>
+                setPostInput((previous) => ({
+                  ...previous,
+                  postUrl: e.target.value,
+                }))
+              }
+              type="url"
+              placeholder="http://..."
+              value={postInput.postUrl}
+              required
+              disabled={loading}
+            ></input>
+            <textarea
+              data-test="description"
+              onChange={(e) =>
+                setPostInput((previous) => ({
+                  ...previous,
+                  postText: e.target.value,
+                }))
+              }
+              type="text"
+              placeholder="Awesome article about #javascript"
+              value={postInput.postText}
+              disabled={loading}
+            ></textarea>
+            <button data-test="publish-btn" disabled={loading}>
+              {loading ? "Publishing..." : "Publish"}
+            </button>
+          </StyledPostForm>
 
-        {posts !== null && posts.length > 0 && (
-          <ul>
-            {posts.map((p) => (
-              <Post
-                key={p.id}
-                id={p.id}
-                postUrl={p.postUrl}
-                postText={p.postText}
-                userIdfromPost={p.user.id}
-                name={p.user.name}
-                pictureUrl={p.user.pictureUrl}
-                getData={getPosts}
-              />
-            ))}
-          </ul>
-        )}
-      </StyledLeftTimeline>
+          {posts === null ? (
+            <h4 data-test="message">Loading...</h4>
+          ) : (
+            posts.length === 0 && (
+              <h4 data-test="message">There are no posts yet</h4>
+            )
+          )}
 
-      <Trending posts={posts} />
+          {posts !== null && posts.length > 0 && (
+            <ul>
+              {posts.map((p) => (
+                <Post
+                  key={p.id}
+                  id={p.id}
+                  postUrl={p.postUrl}
+                  postText={p.postText}
+                  userIdfromPost={p.user.id}
+                  name={p.user.name}
+                  pictureUrl={p.user.pictureUrl}
+                  getData={getPosts}
+                />
+              ))}
+            </ul>
+          )}
+        </StyledLeftTimeline>
+
+        <Trending posts={posts} />
+      </StyledContainer>
     </StyledTimeLine>
   );
 };
@@ -157,8 +163,10 @@ const StyledTimeLine = styled.div`
   min-width: 100vw;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+
   h1 {
     @media (min-width: 1200px) {
       font-size: 43px;
@@ -174,25 +182,6 @@ const StyledTimeLine = styled.div`
     line-height: 49px;
     color: #ffffff;
   }
-  div {
-    align-items: center;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    h4 {
-      @media (min-width: 1200px) {
-        font-size: 34px;
-        line-height: 46px;
-      }
-      margin-top: 20px;
-      align-self: center;
-      font-family: Oswald;
-      font-size: 24px;
-      font-weight: 700;
-      line-height: 38px;
-      color: #ffffff;
-    }
-  }
   ul {
     width: 100%;
     display: flex;
@@ -202,10 +191,37 @@ const StyledTimeLine = styled.div`
   }
 `;
 
+const StyledDiv = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  h4 {
+    @media (min-width: 1200px) {
+      font-size: 34px;
+      line-height: 46px;
+    }
+    margin-top: 20px;
+    align-self: center;
+    font-family: Oswald;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 38px;
+    color: #ffffff;
+  }
+`;
+
 const StyledLeftTimeline = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+const StyledContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 25px;
 `;
 
 const StyledPostForm = styled.form`
@@ -225,7 +241,7 @@ const StyledPostForm = styled.form`
   border-radius: unset;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   div {
     @media (min-width: 1200px) {
       justify-content: unset;

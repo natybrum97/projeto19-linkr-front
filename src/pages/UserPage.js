@@ -18,13 +18,16 @@ export default function UserPage() {
 
     promise
       .then((response) => setPosts(response.data.userPosts))
-      .catch((error) => error.response.status === 401 ? navigate("/") : console.log(error.response.data));
+      .catch((error) =>
+        error.response.status === 401
+          ? navigate("/")
+          : console.log(error.response.data)
+      );
   }
 
   useEffect(() => {
     LoadPosts(authToken, id);
   });
-
 
   return (
     <UserTimeLine>
@@ -47,32 +50,32 @@ export default function UserPage() {
             )
           )}
         </Container>
-        
       </PagesContainer>
 
-      <Trending />
+      <StyledContainer>
+        {posts !== null && posts !== undefined && posts.userPosts.length > 0 ? (
+          <ul>
+            {posts.userPosts.map((p) => (
+              <Post
+                key={p.id}
+                id={p.id}
+                postUrl={p.postUrl}
+                postText={p.postText}
+                userIdfromPost={posts.user.id}
+                name={posts.user.name}
+                pictureUrl={posts.user.pictureUrl}
+                getData={LoadPosts}
+              />
+            ))}
+          </ul>
+        ) : (
+          posts !== null &&
+          posts !== undefined &&
+          posts.userPosts.length === 0 && <h3>No Posts Yet</h3>
+        )}
 
-      {posts !== null && posts !== undefined && posts.userPosts.length > 0 ? (
-        <ul>
-          {posts.userPosts.map((p) => (
-            <Post
-              key={p.id}
-              id={p.id}
-              postUrl={p.postUrl}
-              postText={p.postText}
-              userIdfromPost={posts.user.id}
-              name={posts.user.name}
-              pictureUrl={posts.user.pictureUrl}
-              getData={LoadPosts}
-            />
-          ))}
-        </ul>
-      ) : (
-        posts !== null &&
-        posts !== undefined &&
-        posts.userPosts.length === 0 && <h3>No Posts Yet</h3>
-      )}
-
+        <Trending />
+      </StyledContainer>
     </UserTimeLine>
   );
 }
@@ -112,12 +115,20 @@ const SearchBarWrapper = styled.div`
   }
 `;
 
+const StyledContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 25px;
+`;
+
 const UserTimeLine = styled.div`
   max-width: 100%;
   min-height: calc(100vh - 90px);
   padding-top: 90px;
   background-color: #333333;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 10px;
