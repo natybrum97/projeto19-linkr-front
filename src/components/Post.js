@@ -703,13 +703,13 @@ const StyledFilledHeart = styled(AiFillHeart)`
   margin-bottom: 6px;
   font-size: 20px;
   color: #ac0000;
-  &:hover {
+  /* &:hover {
     transition-duration: 400ms;
     color: #ffffff;
     ${StyledPost}:hover & {
       color: #ffffff;
     }
-  }
+  } */
 `;
 
 const StyledLink = styled(Link)`
