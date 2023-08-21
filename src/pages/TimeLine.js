@@ -17,10 +17,6 @@ const TimeLine = () => {
 
   const { isLoged } = useContext(LoginContext);
 
-  useEffect(() => {
-    isLoged();
-  });
-
   const getPosts = async () => {
     try {
       const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post`);
@@ -37,6 +33,7 @@ const TimeLine = () => {
     }
   };
   useEffect(() => {
+    isLoged();
     getPosts();
   }, []);
 
@@ -123,6 +120,7 @@ const TimeLine = () => {
                 userIdfromPost={p.user.id}
                 name={p.user.name}
                 pictureUrl={p.user.pictureUrl}
+                getData={getPosts}
               />
             ))}
           </ul>

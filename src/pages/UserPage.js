@@ -19,8 +19,8 @@ export default function UserPage() {
 
   const [posts, setPosts] = useState(null);
 
-  function LoadPosts(token, id) {
-    const promise = api.getUserPost(token, id);
+  function LoadPosts() {
+    const promise = api.getUserPost(authToken, id);
 
     promise.then((response) => {
       setPosts(response.data.userPosts);
@@ -29,7 +29,7 @@ export default function UserPage() {
   }
 
   useEffect(() => {
-    LoadPosts(authToken, id);
+    LoadPosts();
   }, [authToken, id]);
 
   return (
@@ -53,29 +53,32 @@ export default function UserPage() {
             )
           )}
         </Container>
-
-        {posts !== null && posts !== undefined && posts.userPosts.length > 0 ? (
-          <ul>
-            {posts.userPosts.map((p) => (
-              <Post
-                key={p.id}
-                id={p.id}
-                postUrl={p.postUrl}
-                postText={p.postText}
-                userIdfromPost={posts.user.id}
-                name={posts.user.name}
-                pictureUrl={posts.user.pictureUrl}
-              />
-            ))}
-          </ul>
-        ) : (
-          posts !== null &&
-          posts !== undefined &&
-          posts.userPosts.length === 0 && <h3>No Posts Yet</h3>
-        )}
+        
       </PagesContainer>
 
       <Trending />
+
+      {posts !== null && posts !== undefined && posts.userPosts.length > 0 ? (
+        <ul>
+          {posts.userPosts.map((p) => (
+            <Post
+              key={p.id}
+              id={p.id}
+              postUrl={p.postUrl}
+              postText={p.postText}
+              userIdfromPost={posts.user.id}
+              name={posts.user.name}
+              pictureUrl={posts.user.pictureUrl}
+              getData={LoadPosts}
+            />
+          ))}
+        </ul>
+      ) : (
+        posts !== null &&
+        posts !== undefined &&
+        posts.userPosts.length === 0 && <h3>No Posts Yet</h3>
+      )}
+
     </UserTimeLine>
   );
 }

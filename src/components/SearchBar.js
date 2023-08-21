@@ -2,14 +2,15 @@ import axios from "axios";
 import React, { useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 import { FiSearch } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
 export default function SearchBar() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
 
+  const navigate = useNavigate();
+
+  const [searchResults, setSearchResults] = useState([]);
   const handleSearch = async (value) => {
-    setSearchTerm(value);
 
     console.log(value);
 
@@ -41,10 +42,10 @@ export default function SearchBar() {
       <FiSearch color="#C6C6C6" size={34} cursor="pointer" />
       <ul>
         {searchResults.map((result) => (
-          <li key={result.id}>
-            <img src={result.pictureUrl} alt={`${result.username}'s profile`} />
-            <span>{result.username}</span>
-          </li>
+        <li data-test="user-search" onClick={() => navigate(`/user/${result.id}`)} key={result.id}>
+          <img src={result.pictureUrl} alt={`${result.username}'s profile`} />
+          <span>{result.username}</span>
+        </li>
         ))}
       </ul>
     </Container>
@@ -73,15 +74,36 @@ const Container = styled.form`
   }
 
   ul {
+    width: calc(100% + 10px);
+    margin-top: -22px;
+    z-index: 2;
     list-style: none;
     padding: 0;
-    margin: 0;
+    background-color: #E7E7E7;
+    border-bottom-left-radius:8px;
+    border-bottom-right-radius: 8px;
+    margin-left: -10px;
 
+    li:last-child{
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
     li {
+      width: 100%;
       display: flex; /* Exibir foto e nome lado a lado */
-      align-items: center;
+      align-self: flex-start;
+      padding: 5px;
       gap: 10px;
-
+      background-color: #E7E7E7;
+      cursor: pointer;
+      &:hover{
+        span {
+          opacity: 0.75;
+        }
+        img {
+          opacity: 0.75;
+        }
+      }
       img {
         width: 40px; /* Ajuste conforme necessário */
         height: 40px; /* Ajuste conforme necessário */
@@ -89,8 +111,10 @@ const Container = styled.form`
       }
 
       span {
-        font-size: 16px;
-        color: white;
+        font-family: Lato;
+        font-size: 19px;
+        font-weight: 400;
+        margin-top: 10px;
       }
     }
   }
