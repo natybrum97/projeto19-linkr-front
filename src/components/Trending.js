@@ -21,7 +21,7 @@ export default function Trending() {
     <StyledTrending data-test="trending">
       <h2>trending</h2>
 
-      {!hashtagsTrending || hashtagsTrending.length === 0 ? (
+      {hashtagsTrending.length === 0 ? (
         <h2>There are no trends yet</h2>
       ) : (
         <StyledList>
