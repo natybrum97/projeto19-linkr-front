@@ -13,6 +13,7 @@ const Post = ({
   userIdfromPost,
   name,
   pictureUrl,
+  getData
 }) => {
   const { pathname } = useLocation();
 
@@ -249,7 +250,7 @@ const Post = ({
       // Fechar o modal após a exclusão
       setShowDeleteModal(false);
 
-      // Adicione aqui qualquer outra lógica que você precise
+      getData();
     } catch (error) {
       alert("Não foi possivel deletar o post ");
       setShowDeleteModal(false);

@@ -18,8 +18,8 @@ export default function UserPage() {
 
   const [posts, setPosts] = useState(null);
 
-  function LoadPosts(token, id) {
-    const promise = api.getUserPost(token, id);
+  function LoadPosts() {
+    const promise = api.getUserPost(authToken, id);
 
     promise.then((response) => {
       setPosts(response.data.userPosts);
@@ -28,7 +28,7 @@ export default function UserPage() {
   }
 
   useEffect(() => {
-    LoadPosts(authToken, id);
+    LoadPosts();
   }, [authToken, id]);
 
   return (
@@ -63,6 +63,7 @@ export default function UserPage() {
               userIdfromPost={posts.user.id}
               name={posts.user.name}
               pictureUrl={posts.user.pictureUrl}
+              getData={LoadPosts}
             />
           ))}
         </ul>

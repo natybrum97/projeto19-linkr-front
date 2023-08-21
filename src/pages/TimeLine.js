@@ -125,6 +125,7 @@ const TimeLine = () => {
                 userIdfromPost={p.user.id}
                 name={p.user.name}
                 pictureUrl={p.user.pictureUrl}
+                getData={getPosts}
               />
             ))}
           </ul>
