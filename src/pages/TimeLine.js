@@ -233,6 +233,8 @@ const StyledPostForm = styled.form`
     }
   }
   position: relative;
+  min-width: 100%;
+  max-width: 100%;
   width: 100%;
   height: 174px;
   background-color: #ffffff;

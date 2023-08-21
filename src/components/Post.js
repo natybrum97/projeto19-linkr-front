@@ -597,6 +597,8 @@ const StyledPost = styled.li`
   }
   position: relative;
   margin-top: 13px;
+  min-width: 100%;
+  max-width: 100%;
   width: 100%;
   height: 220px;
   background-color: #171717;
