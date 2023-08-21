@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { styled } from "styled-components";
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
+import Trending from "../components/Trending";
 import { LoginContext } from "../contexts/LoginContext";
 
 const TimeLine = () => {
@@ -11,25 +12,15 @@ const TimeLine = () => {
     postText: "",
   });
 
-  const [hashtagsTrending, setTrending] = useState(null);
-
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState(null);
 
   const { isLoged } = useContext(LoginContext);
 
-  useEffect(() => {
-    isLoged();
-  });
-
   const getPosts = async () => {
     try {
       const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post`);
 
-      // const res = await axios.get(`${process.env.REACT_APP_API_URL}/trending`);
-      // console.log("resposta: ", res.data);
-
-      // setTrending(res.data);
       setPosts(data);
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
@@ -42,6 +33,7 @@ const TimeLine = () => {
     }
   };
   useEffect(() => {
+    isLoged();
     getPosts();
   }, []);
 
@@ -69,7 +61,7 @@ const TimeLine = () => {
       </SearchBarWrapper>
 
       <h1>timeline</h1>
-      <div>
+      <StyledLeftTimeline>
         <StyledPostForm data-test="publish-box" onSubmit={(e) => submitPost(e)}>
           <div>
             <div>
@@ -128,27 +120,14 @@ const TimeLine = () => {
                 userIdfromPost={p.user.id}
                 name={p.user.name}
                 pictureUrl={p.user.pictureUrl}
+                getData={getPosts}
               />
             ))}
           </ul>
         )}
-      </div>
+      </StyledLeftTimeline>
 
-      <StyledTrending>
-        {hashtagsTrending === null ? (
-          <h4>Loading...</h4>
-        ) : (
-          hashtagsTrending.length === 0 && <h4>There are no trends yet</h4>
-        )}
-
-        {hashtagsTrending !== null && posts.length > 0 && (
-          <ul>
-            {hashtagsTrending.map((trend, i) => (
-              <p key={i}>{trend.hashtagText}</p>
-            ))}
-          </ul>
-        )}
-      </StyledTrending>
+      <Trending posts={posts} />
     </StyledTimeLine>
   );
 };
@@ -178,7 +157,8 @@ const StyledTimeLine = styled.div`
   min-width: 100vw;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   h1 {
     @media (min-width: 1200px) {
       font-size: 43px;
@@ -220,6 +200,12 @@ const StyledTimeLine = styled.div`
     align-items: center;
     margin-bottom: 20px;
   }
+`;
+
+const StyledLeftTimeline = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const StyledPostForm = styled.form`
@@ -345,14 +331,4 @@ const StyledPostForm = styled.form`
       opacity: 0.5;
     }
   }
-`;
-
-const StyledTrending = styled.div`
-  margin-top: 72px;
-  background-color: #171717;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  border-radius: 10px;
 `;

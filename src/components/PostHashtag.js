@@ -1,11 +1,11 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 
-const Post = ({
+const PostHashtag = ({
   id,
   postId = id,
   postUrl,
@@ -13,10 +13,7 @@ const Post = ({
   userIdfromPost,
   name,
   pictureUrl,
-  getData
 }) => {
-  const { pathname } = useLocation();
-
   const [urlMetaData, setUrlMetaData] = useState({
     title: "",
     description: "",
@@ -38,19 +35,11 @@ const Post = ({
       console.log(`${status} ${statusText}\n${message}`);
     }
   };
-  const [ifEdited, setIfEdited] = useState(0);
-  const [editedPostText, setEditedPostText] = useState(postText);
+
   const [renderBoldHashtags, setBoldHashTags] = useState(null);
   const changeBoldHashTags = () => {
     setBoldHashTags(() => {
-      let string;
-      if (ifEdited !== 0) {
-        string = editedPostText;
-      } else {
-        string = postText;
-      }
-
-      return string?.split(" ").map((word, i) => {
+      return postText?.split(" ").map((word, i) => {
         if (word[0] === "#") {
           return (
             <StyledLink key={i} to={`/hashtag/${word.replace("#", "")}`}>
@@ -66,14 +55,13 @@ const Post = ({
   useEffect(() => {
     fetchMetaData();
     changeBoldHashTags();
-  }, [ifEdited]);
+  }, []);
 
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [showLikesTooltip, setShowLikesTooltip] = useState(false);
   const [usernames, setUsernames] = useState([]);
   const [likeActionDone, setLikeActionDone] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userid");
@@ -193,92 +181,13 @@ const Post = ({
     }
   };
 
-  const editPostRef = useRef(null);
-  const [loading, setLoading] = useState(false);
-  const [openEditPost, setOpenEditPost] = useState(false);
-  const editPost = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      await axios.put(
-        `${process.env.REACT_APP_API_URL}/post/${id}`,
-        { postUrl, postText: editedPostText },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setOpenEditPost(false);
-      setLoading(false);
-      setIfEdited((previous) => previous + 1);
-    } catch (err) {
-      alert("não foi possível salvar as alterações");
-      setLoading(false);
-    }
-  };
-  const enableEdit = () => {
-    setOpenEditPost((previous) => !previous);
-    setTimeout(() => {
-      if (!openEditPost) editPostRef.current.focus();
-    }, 1);
-  };
-  useEffect(() => {
-    const cancelEdit = (e) => {
-      if (e.key === "Escape") setOpenEditPost(false);
-    };
-    window.addEventListener("keydown", cancelEdit);
-    return () => {
-      window.removeEventListener("keydown", cancelEdit);
-    };
-  }, []);
-
-  const handleDeleteClick = () => {
-    setShowDeleteModal(true);
-  };
-
-  const handleDeleteConfirm = async () => {
-    try {
-      // Lógica para deletar o post
-      await axios.delete(`${process.env.REACT_APP_API_URL}/post/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      // Fechar o modal após a exclusão
-      setShowDeleteModal(false);
-
-      getData();
-    } catch (error) {
-      alert("Não foi possivel deletar o post ");
-      setShowDeleteModal(false);
-
-      console.error("Erro ao deletar o post:", error);
-    }
-  };
-
-  const handleDeleteCancel = () => {
-    setShowDeleteModal(false);
-  };
-
   return (
     <StyledPost data-test="post">
       {parseInt(userId) === userIdfromPost && (
         <>
-          <StyledTrash data-test="delete-btn" onClick={handleDeleteClick} />
-          <StyledEdit data-test="edit-btn" onClick={enableEdit} />
+          <StyledTrash onClick={() => alert(`deletar post de id ${id}`)} />
+          <StyledEdit onClick={() => alert(`editar post de id ${id}`)} />
         </>
-      )}
-      {showDeleteModal && (
-        <Modal onClick={() => setShowDeleteModal(false)}>
-          <ModalContent>
-            <p>Are you sure you want to delete this post?</p>
-            <Button data-test="cancel" cancel onClick={handleDeleteCancel}>No, go back</Button>
-            <Button data-test="confirm" onClick={handleDeleteConfirm}>Yes, delete it</Button>
-          </ModalContent>
-        </Modal>
       )}
       <PostInfo>
         <div>
@@ -286,22 +195,20 @@ const Post = ({
         </div>
         <div>
           {isLiked ? (
-            <StyledFilledHeart data-test="like-btn"
-              pathname={pathname.slice(1, 5)}
+            <StyledFilledHeart
               onClick={handleUnlikeClick}
               onMouseEnter={() => setShowLikesTooltip(true)}
               onMouseLeave={() => setShowLikesTooltip(false)}
             />
           ) : (
-            <StyledHeart data-test="like-btn"
-              pathname={pathname.slice(1, 5)}
+            <StyledHeart
               onClick={handleLikeClick}
               onMouseEnter={() => setShowLikesTooltip(true)}
               onMouseLeave={() => setShowLikesTooltip(false)}
             />
           )}
           {showLikesTooltip && (
-            <LikesTooltip data-test="tooltip">
+            <LikesTooltip>
               {usernames.length === 0 ? (
                 <div>Seja o primeiro a curtir isto</div>
               ) : (
@@ -322,31 +229,14 @@ const Post = ({
             </LikesTooltip>
           )}
         </div>
-        <p data-test="counter">{likeCount} likes</p>
+        <p>{likeCount} likes</p>
       </PostInfo>
 
       <PostText>
         <h2 data-test="username">
           <Link to={`/user/${userIdfromPost}`}>{name}</Link>
         </h2>
-        {!openEditPost ? (
-          <p data-test="description">{renderBoldHashtags}</p>
-        ) : (
-          <form
-            onSubmit={(e) => {
-              editPost(e);
-            }}
-          >
-            <input data-test="edit-input"
-              onChange={(e) => setEditedPostText(e.target.value)}
-              value={editedPostText}
-              disabled={loading}
-              type="text"
-              ref={editPostRef}
-              tabIndex={0}
-            ></input>
-          </form>
-        )}
+        <p data-test="description">{renderBoldHashtags}</p>
       </PostText>
       <Snippet
         to={postUrl}
@@ -369,78 +259,7 @@ const Post = ({
   );
 };
 
-export default Post;
-
-const Modal = styled.div`
-  cursor: pointer;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  justify-content: center;
-
-  z-index: 1000;
-`;
-const ModalContent = styled.div`
-  @media (min-width: 1200px) {
-    max-width: 40%;
-  }
-  max-width: 75%;
-  height: 180px;
-  border-radius: 50px;
-  background-color: #333;
-  padding: 20px;
-
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
-  text-align: center;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  button{
-    position: absolute;
-    margin-top: 120px;
-  }
-  button:nth-child(3){
-    margin-left: 160px;
-  }
-  button:nth-child(2){
-    margin-left: -140px;
-  }
-  p {
-    @media (min-width: 1200px) {
-      font-size: 30px;
-      font-weight: 700;
-    }
-    font-family: Lato;
-    font-size: 22px;
-    font-weight: 600;
-    line-height: 41px;
-    color: white;
-  }
-`;
-
-const Button = styled.button`
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  width: 130px;
-  font-size: 16px;
-  margin: 0 10px;
-  cursor: pointer;
-  background-color: ${({ cancel }) => (cancel ? "#fff" : "#007BFF")};
-  color: ${({ cancel }) => (cancel ? "#007BFF" : "#fff")};
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
+export default PostHashtag;
 
 const LikesTooltip = styled.div`
   position: absolute;
@@ -580,13 +399,12 @@ const Snippet = styled(Link)`
 
 const StyledPost = styled.li`
   @media (min-width: 1200px) {
-    margin-top: 30px;
     width: 500px;
     border-radius: 10px;
     height: 276px;
   }
   position: relative;
-  margin-top: 13px;
+  margin-bottom: 13px;
   width: 100%;
   height: 220px;
   background-color: #171717;
@@ -654,36 +472,13 @@ const PostText = styled.div`
     line-height: 18px;
     color: #b7b7b7;
   }
+
   strong {
     font-weight: 700;
-  }
-  form {
-    width: 92%;
-    align-self: flex-start;
-    @media (min-width: 1200px) {
-      width: 94.75%;
-    }
-    input {
-      margin-top: 3px;
-      width: 100%;
-      height: 38px;
-      border-radius: 7px;
-      border: none;
-      color: #4c4c4c;
-      font-size: 14px;
-      font-weight: 400;
-      line-height: 17px;
-      padding-left: 4px;
-      &:disabled {
-        opacity: 0.5;
-      }
-    }
   }
 `;
 
 const StyledHeart = styled(AiOutlineHeart)`
-  position: ${({ pathname }) => (pathname === "user" ? "absolute" : "unset")};
-  left: 23px;
   cursor: pointer;
   margin-top: 10px;
   margin-bottom: 6px;
@@ -696,20 +491,18 @@ const StyledHeart = styled(AiOutlineHeart)`
 `;
 
 const StyledFilledHeart = styled(AiFillHeart)`
-  position: ${({ pathname }) => (pathname === "user" ? "absolute" : "unset")};
-  left: 23px;
   cursor: pointer;
   margin-top: 10px;
   margin-bottom: 6px;
   font-size: 20px;
   color: #ac0000;
-  /* &:hover {
+  &:hover {
     transition-duration: 400ms;
     color: #ffffff;
     ${StyledPost}:hover & {
       color: #ffffff;
     }
-  } */
+  }
 `;
 
 const StyledLink = styled(Link)`

@@ -4,6 +4,7 @@ import { styled } from "styled-components";
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
 import api from "../services/api";
+import Trending from "../components/Trending";
 
 export default function UserPage() {
   const authToken = localStorage.getItem("token");
@@ -12,8 +13,8 @@ export default function UserPage() {
 
   const [posts, setPosts] = useState(null);
 
-  function LoadPosts(token, id) {
-    const promise = api.getUserPost(token, id);
+  function LoadPosts() {
+    const promise = api.getUserPost(authToken, id);
 
     promise
       .then((response) => setPosts(response.data.userPosts))
@@ -24,26 +25,32 @@ export default function UserPage() {
     LoadPosts(authToken, id);
   });
 
+
   return (
     <UserTimeLine>
       <SearchBarWrapper>
         <SearchBar />
       </SearchBarWrapper>
 
-      <Container>
-        {posts === null ? (
-          <h3>Loading...</h3>
-        ) : posts === undefined ? (
-          <h3>404 Not Found</h3>
-        ) : (
-          posts.userPosts.length >= 0 && (
-            <>
-              <img src={posts.user.pictureUrl} alt="profilePicture" />
-              <h1>{posts.user.name}’s posts</h1>
-            </>
-          )
-        )}
-      </Container>
+      <PagesContainer>
+        <Container>
+          {posts === null ? (
+            <h4>Loading...</h4>
+          ) : posts === undefined ? (
+            <h4>404 Not Found</h4>
+          ) : (
+            posts.userPosts.length >= 0 && (
+              <>
+                <img src={posts.user.pictureUrl} alt="profilePicture" />
+                <h1>{posts.user.name}’s posts</h1>
+              </>
+            )
+          )}
+        </Container>
+        
+      </PagesContainer>
+
+      <Trending />
 
       {posts !== null && posts !== undefined && posts.userPosts.length > 0 ? (
         <ul>
@@ -56,6 +63,7 @@ export default function UserPage() {
               userIdfromPost={posts.user.id}
               name={posts.user.name}
               pictureUrl={posts.user.pictureUrl}
+              getData={LoadPosts}
             />
           ))}
         </ul>
@@ -64,9 +72,16 @@ export default function UserPage() {
         posts !== undefined &&
         posts.userPosts.length === 0 && <h3>No Posts Yet</h3>
       )}
+
     </UserTimeLine>
   );
 }
+
+const PagesContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Container = styled.div`
   width: 563px;
@@ -103,19 +118,19 @@ const UserTimeLine = styled.div`
   padding-top: 90px;
   background-color: #333333;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 10px;
 
   h1,
-  h3 {
+  h4 {
     font-size: 40px;
     font-weight: 700;
     font-family: Oswald;
     color: #fff;
   }
 
-  h3 {
+  h4 {
     height: 300px;
     display: flex;
     align-items: center;
@@ -124,9 +139,20 @@ const UserTimeLine = styled.div`
     margin-left: auto;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 1200px) {
     h1 {
       font-size: 30px;
+    }
+  }
+
+  ul {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    div {
+      width: 100%;
     }
   }
 `;
