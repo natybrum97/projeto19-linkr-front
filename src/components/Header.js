@@ -82,6 +82,7 @@ const Container = styled.div`
 
 const SearchBarWrapper = styled.div`
     width: 593px;
+    z-index: 3;
 
     @media (max-width: 767px) {
         display: none;

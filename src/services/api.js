@@ -14,6 +14,12 @@ function getUserPost(token, id) {
   return promise;
 }
 
-const api = { getUserPost };
+function searchUserByName(username) {
+  const promise = axios.get(`${process.env.REACT_APP_API_URL}/search-users?query=${username}`);
+
+  return promise;
+}
+
+const api = { getUserPost, searchUserByName };
 
 export default api;

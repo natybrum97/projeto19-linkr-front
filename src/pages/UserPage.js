@@ -15,8 +15,9 @@ export default function UserPage() {
   function LoadPosts(token, id) {
     const promise = api.getUserPost(token, id);
 
-    promise.then((response) => setPosts(response.data.userPosts));
-    promise.catch((error) => error.response.status === 401 ? navigate("/") : console.log(error.response.data));
+    promise
+      .then((response) => setPosts(response.data.userPosts))
+      .catch((error) => error.response.status === 401 ? navigate("/") : console.log(error.response.data));
   }
 
   useEffect(() => {
