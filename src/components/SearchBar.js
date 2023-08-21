@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 import { FiSearch } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
 export default function SearchBar() {
@@ -15,19 +14,20 @@ export default function SearchBar() {
     console.log(value);
 
     if (value && value.length >= 3) {
-    
-      axios.get(`${process.env.REACT_APP_API_URL}/search-users?query=${value}`).then((response) => {
-      console.log(response.data);
-      setSearchResults(response.data);
-    }).catch((error) => {
-      console.error(error);
-      setSearchResults([]); 
-    });
-  } else {
-    setSearchResults([]);
-  }
-
-}
+      axios
+        .get(`${process.env.REACT_APP_API_URL}/search-users?query=${value}`)
+        .then((response) => {
+          console.log(response.data);
+          setSearchResults(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+          setSearchResults([]);
+        });
+    } else {
+      setSearchResults([]);
+    }
+  };
 
   return (
     <Container>
@@ -41,10 +41,10 @@ export default function SearchBar() {
       <FiSearch color="#C6C6C6" size={34} cursor="pointer" />
       <ul>
         {searchResults.map((result) => (
-        <li key={result.id}>
-          <img src={result.pictureUrl} alt={`${result.username}'s profile`} />
-          <span>{result.username}</span>
-        </li>
+          <li key={result.id}>
+            <img src={result.pictureUrl} alt={`${result.username}'s profile`} />
+            <span>{result.username}</span>
+          </li>
         ))}
       </ul>
     </Container>

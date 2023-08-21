@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import SearchBar from "../components/SearchBar";
+import Trending from "../components/Trending";
+import PostHashtag from "../components/PostHashtag";
 import { useContext } from "react";
 import { LoginContext } from "../contexts/LoginContext";
 
 const HashtagPosts = () => {
-  
   const [posts, setPosts] = useState(null);
 
   const { hashtag } = useParams();
@@ -16,11 +17,13 @@ const HashtagPosts = () => {
 
   useEffect(() => {
     isLoged();
-  })
+  });
 
   const getPosts = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/hashtag/${hashtag}`
+      );
       setPosts(data);
       console.log(data);
     } catch ({
@@ -45,14 +48,35 @@ const HashtagPosts = () => {
         <SearchBar />
       </SearchBarWrapper>
 
-      <h1>#{hashtag}</h1>
-      <div>
-        {posts === null ? (
-          <h4>Loading...</h4>
-        ) : (
-          posts.length === 0 && <h4>There are no posts yet</h4>
-        )}
-      </div>
+      <h1 data-test="hashtag-title"># {hashtag}</h1>
+
+      <StyledContainer>
+        <StyledDiv>
+          {posts === null ? (
+            <h4>Loading...</h4>
+          ) : (
+            posts.length === 0 && <h4>There are no posts yet</h4>
+          )}
+
+          {posts !== null && posts.length > 0 && (
+            <ul>
+              {posts.map((p) => (
+                <PostHashtag
+                  key={p.id}
+                  id={p.id}
+                  postUrl={p.postUrl}
+                  postText={p.postText}
+                  userIdfromPost={p.user.id}
+                  name={p.user.name}
+                  pictureUrl={p.user.pictureUrl}
+                />
+              ))}
+            </ul>
+          )}
+        </StyledDiv>
+
+        <Trending />
+      </StyledContainer>
     </StyledHashtagPosts>
   );
 };
@@ -73,6 +97,13 @@ const SearchBarWrapper = styled.span`
   }
 `;
 
+const StyledContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 25px;
+`;
+
 const StyledHashtagPosts = styled.div`
   @media (min-width: 1200px) {
     padding-top: 30px;
@@ -83,6 +114,9 @@ const StyledHashtagPosts = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
   h1 {
     @media (min-width: 1200px) {
       font-size: 43px;
@@ -98,30 +132,30 @@ const StyledHashtagPosts = styled.div`
     line-height: 49px;
     color: #ffffff;
   }
-  div {
-    align-items: center;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    h4 {
-      @media (min-width: 1200px) {
-        font-size: 34px;
-        line-height: 46px;
-      }
-      margin-top: 20px;
-      align-self: center;
-      font-family: Oswald;
-      font-size: 24px;
-      font-weight: 700;
-      line-height: 38px;
-      color: #ffffff;
-    }
-  }
   ul {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
+  }
+`;
+
+const StyledDiv = styled.div`
+  background-color: yellow;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  h4 {
+    @media (min-width: 1200px) {
+      font-size: 34px;
+      line-height: 46px;
+    }
+    margin-top: 20px;
+    align-self: center;
+    font-family: Oswald;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 38px;
+    color: #ffffff;
   }
 `;
