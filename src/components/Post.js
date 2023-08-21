@@ -6,16 +6,15 @@ import { Link, useLocation } from "react-router-dom";
 import { styled } from "styled-components";
 
 const Post = ({
-    id,
-    postId = id,
-    postUrl,
-    postText,
-    userIdfromPost,
-    name, 
-    pictureUrl
+  id,
+  postId = id,
+  postUrl,
+  postText,
+  userIdfromPost,
+  name,
+  pictureUrl,
 }) => {
-
-  const {pathname} = useLocation();
+  const { pathname } = useLocation();
 
   const [urlMetaData, setUrlMetaData] = useState({
     title: "",
@@ -73,6 +72,7 @@ const Post = ({
   const [showLikesTooltip, setShowLikesTooltip] = useState(false);
   const [usernames, setUsernames] = useState([]);
   const [likeActionDone, setLikeActionDone] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userid");
@@ -198,59 +198,106 @@ const Post = ({
   const editPost = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
-      await axios.put(`${process.env.REACT_APP_API_URL}/post/${id}`, { postUrl, postText: editedPostText }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/post/${id}`,
+        { postUrl, postText: editedPostText },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       setOpenEditPost(false);
       setLoading(false);
-      setIfEdited(previous => previous + 1);
+      setIfEdited((previous) => previous + 1);
     } catch (err) {
-      alert('não foi possível salvar as alterações');
+      alert("não foi possível salvar as alterações");
       setLoading(false);
     }
   };
   const enableEdit = () => {
-    setOpenEditPost(previous => !previous); 
+    setOpenEditPost((previous) => !previous);
     setTimeout(() => {
       if (!openEditPost) editPostRef.current.focus();
     }, 1);
-  };  
+  };
   useEffect(() => {
     const cancelEdit = (e) => {
-      if (e.key === 'Escape') setOpenEditPost(false);
+      if (e.key === "Escape") setOpenEditPost(false);
     };
-    window.addEventListener('keydown', cancelEdit);
+    window.addEventListener("keydown", cancelEdit);
     return () => {
-      window.removeEventListener('keydown', cancelEdit);
+      window.removeEventListener("keydown", cancelEdit);
     };
   }, []);
 
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      // Lógica para deletar o post
+      await axios.delete(`${process.env.REACT_APP_API_URL}/post/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      // Fechar o modal após a exclusão
+      setShowDeleteModal(false);
+
+      // Adicione aqui qualquer outra lógica que você precise
+    } catch (error) {
+      alert("Não foi possivel deletar o post ");
+      setShowDeleteModal(false);
+
+      console.error("Erro ao deletar o post:", error);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+  };
+
   return (
     <StyledPost data-test="post">
-    {parseInt(userId) === userIdfromPost 
-      && 
+      {parseInt(userId) === userIdfromPost && (
         <>
-          <StyledTrash onClick={() => alert(`deletar post de id ${id}`)}/> 
-          <StyledEdit onClick={enableEdit}/>
+          <StyledTrash onClick={handleDeleteClick} />
+          <StyledEdit onClick={enableEdit} />
         </>
-    }
+      )}
+      {showDeleteModal && (
+        <Modal>
+          <ModalContent>
+            <p>Tem certeza que deseja deletar este post?</p>
+            <ButtonContainer>
+              <Button cancel onClick={handleDeleteCancel}>
+                Cancelar
+              </Button>
+              <Button onClick={handleDeleteConfirm}>Confirmar</Button>
+            </ButtonContainer>
+          </ModalContent>
+        </Modal>
+      )}
       <PostInfo>
         <div>
           <img src={pictureUrl} alt="pictureUrl" />
         </div>
         <div>
           {isLiked ? (
-            <StyledFilledHeart pathname={pathname.slice(1, 5)}
+            <StyledFilledHeart
+              pathname={pathname.slice(1, 5)}
               onClick={handleUnlikeClick}
               onMouseEnter={() => setShowLikesTooltip(true)}
               onMouseLeave={() => setShowLikesTooltip(false)}
             />
           ) : (
-            <StyledHeart pathname={pathname.slice(1, 5)}
+            <StyledHeart
+              pathname={pathname.slice(1, 5)}
               onClick={handleLikeClick}
               onMouseEnter={() => setShowLikesTooltip(true)}
               onMouseLeave={() => setShowLikesTooltip(false)}
@@ -282,21 +329,34 @@ const Post = ({
       </PostInfo>
 
       <PostText>
-        <h2 data-test="username"><Link to={`/user/${userIdfromPost}`}>{name}</Link></h2>
-        {!openEditPost 
-          ? <p data-test="description">{renderBoldHashtags}</p> 
-          : <form onSubmit={e => {editPost(e)}}><input 
-              onChange={e => setEditedPostText(e.target.value)} 
-              value={editedPostText} 
+        <h2 data-test="username">
+          <Link to={`/user/${userIdfromPost}`}>{name}</Link>
+        </h2>
+        {!openEditPost ? (
+          <p data-test="description">{renderBoldHashtags}</p>
+        ) : (
+          <form
+            onSubmit={(e) => {
+              editPost(e);
+            }}
+          >
+            <input
+              onChange={(e) => setEditedPostText(e.target.value)}
+              value={editedPostText}
               disabled={loading}
               type="text"
               ref={editPostRef}
               tabIndex={0}
-            >
-            </input></form>
-        }
+            ></input>
+          </form>
+        )}
       </PostText>
-      <Snippet to={postUrl} target="_blank" rel="noopener noreferrer" data-test="link">
+      <Snippet
+        to={postUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-test="link"
+      >
         <div>
           <h1>{urlMetaData.title}</h1>
           <h2>{urlMetaData.description}</h2>
@@ -313,6 +373,62 @@ const Post = ({
 };
 
 export default Post;
+
+const Modal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 1000;
+`;
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const ModalContent = styled.div`
+  width: 597px;
+  height: 262px;
+  border-radius: 50px;
+  background-color: #333;
+  padding: 20px;
+
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  p {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: white;
+  }
+`;
+
+const Button = styled.button`
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 16px;
+  margin: 0 10px;
+  cursor: pointer;
+  background-color: ${({ cancel }) => (cancel ? "#fff" : "#007BFF")};
+  color: ${({ cancel }) => (cancel ? "#007BFF" : "#fff")};
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
 
 const LikesTooltip = styled.div`
   position: absolute;
@@ -350,7 +466,7 @@ const Snippet = styled(Link)`
     min-width: 416px;
     max-width: 416px;
     height: 155px;
-  };
+  }
   text-decoration: none;
   cursor: pointer;
   position: absolute;
@@ -497,7 +613,7 @@ const PostText = styled.div`
   margin-left: 13px;
   display: flex;
   flex-direction: column;
-  a{
+  a {
     color: #ffffff;
     text-decoration: none;
   }
@@ -529,24 +645,24 @@ const PostText = styled.div`
   strong {
     font-weight: 700;
   }
-  form{
+  form {
     width: 92%;
     align-self: flex-start;
     @media (min-width: 1200px) {
       width: 94.75%;
     }
-    input{
+    input {
       margin-top: 3px;
       width: 100%;
       height: 38px;
       border-radius: 7px;
       border: none;
-      color: #4C4C4C;
+      color: #4c4c4c;
       font-size: 14px;
       font-weight: 400;
       line-height: 17px;
       padding-left: 4px;
-      &:disabled{
+      &:disabled {
         opacity: 0.5;
       }
     }
@@ -554,7 +670,7 @@ const PostText = styled.div`
 `;
 
 const StyledHeart = styled(AiOutlineHeart)`
-  position: ${({ pathname }) => pathname === 'user' ? 'absolute' : 'unset'};
+  position: ${({ pathname }) => (pathname === "user" ? "absolute" : "unset")};
   left: 23px;
   cursor: pointer;
   margin-top: 10px;
@@ -568,7 +684,7 @@ const StyledHeart = styled(AiOutlineHeart)`
 `;
 
 const StyledFilledHeart = styled(AiFillHeart)`
-  position: ${({ pathname }) => pathname === 'user' ? 'absolute' : 'unset'};
+  position: ${({ pathname }) => (pathname === "user" ? "absolute" : "unset")};
   left: 23px;
   cursor: pointer;
   margin-top: 10px;
@@ -597,7 +713,7 @@ const StyledTrash = styled(BsFillTrashFill)`
   right: 0;
   padding: 10px;
   cursor: pointer;
-  &:hover{
+  &:hover {
     color: red;
     transition-duration: 400ms;
   }
@@ -612,7 +728,7 @@ const StyledEdit = styled(BsFillPencilFill)`
   right: 0;
   padding: 10px;
   cursor: pointer;
-  &:hover{
+  &:hover {
     color: green;
     transition-duration: 400ms;
   }
