@@ -41,7 +41,7 @@ export default function SearchBar() {
       <FiSearch color="#C6C6C6" size={34} cursor="pointer" />
       <ul>
         {searchResults.map((result) => (
-        <li onClick={() => navigate(`/user/${result.id}`)} key={result.id}>
+        <li data-test="user-search" onClick={() => navigate(`/user/${result.id}`)} key={result.id}>
           <img src={result.pictureUrl} alt={`${result.username}'s profile`} />
           <span>{result.username}</span>
         </li>

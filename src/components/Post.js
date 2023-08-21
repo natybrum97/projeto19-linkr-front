@@ -267,16 +267,16 @@ const Post = ({
     <StyledPost data-test="post">
       {parseInt(userId) === userIdfromPost && (
         <>
-          <StyledTrash onClick={handleDeleteClick} />
-          <StyledEdit onClick={enableEdit} />
+          <StyledTrash data-test="delete-btn" onClick={handleDeleteClick} />
+          <StyledEdit data-test="edit-btn" onClick={enableEdit} />
         </>
       )}
       {showDeleteModal && (
         <Modal onClick={() => setShowDeleteModal(false)}>
           <ModalContent>
             <p>Are you sure you want to delete this post?</p>
-            <Button cancel onClick={handleDeleteCancel}>No, go back</Button>
-            <Button onClick={handleDeleteConfirm}>Yes, delete it</Button>
+            <Button data-test="cancel" cancel onClick={handleDeleteCancel}>No, go back</Button>
+            <Button data-test="confirm" onClick={handleDeleteConfirm}>Yes, delete it</Button>
           </ModalContent>
         </Modal>
       )}
@@ -286,14 +286,14 @@ const Post = ({
         </div>
         <div>
           {isLiked ? (
-            <StyledFilledHeart
+            <StyledFilledHeart data-test="like-btn"
               pathname={pathname.slice(1, 5)}
               onClick={handleUnlikeClick}
               onMouseEnter={() => setShowLikesTooltip(true)}
               onMouseLeave={() => setShowLikesTooltip(false)}
             />
           ) : (
-            <StyledHeart
+            <StyledHeart data-test="like-btn"
               pathname={pathname.slice(1, 5)}
               onClick={handleLikeClick}
               onMouseEnter={() => setShowLikesTooltip(true)}
@@ -301,7 +301,7 @@ const Post = ({
             />
           )}
           {showLikesTooltip && (
-            <LikesTooltip>
+            <LikesTooltip data-test="tooltip">
               {usernames.length === 0 ? (
                 <div>Seja o primeiro a curtir isto</div>
               ) : (
@@ -322,7 +322,7 @@ const Post = ({
             </LikesTooltip>
           )}
         </div>
-        <p>{likeCount} likes</p>
+        <p data-test="counter">{likeCount} likes</p>
       </PostInfo>
 
       <PostText>
@@ -337,7 +337,7 @@ const Post = ({
               editPost(e);
             }}
           >
-            <input
+            <input data-test="edit-input"
               onChange={(e) => setEditedPostText(e.target.value)}
               value={editedPostText}
               disabled={loading}
