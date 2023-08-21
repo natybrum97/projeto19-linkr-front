@@ -127,7 +127,7 @@ const TimeLine = () => {
         )}
       </StyledLeftTimeline>
 
-      <Trending />
+      <Trending posts={posts} />
     </StyledTimeLine>
   );
 };

@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-export default function Trending() {
+export default function Trending({ posts }) {
   const [hashtagsTrending, setTrending] = useState([]);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function Trending() {
       console.log(err.response.data);
       alert(err.response.data.message);
     });
-  }, []);
+  }, [posts]);
 
   return (
     <StyledTrending data-test="trending">
