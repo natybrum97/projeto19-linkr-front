@@ -87,11 +87,11 @@ const PagesContainer = styled.div`
 `;
 
 const Container = styled.div`
-  div{
+  div {
     @media (min-width: 1200px) {
       margin-left: -266px;
     }
-    width: 563px;
+    width: 515px;
     max-width: 100%;
     display: flex;
     align-items: center;

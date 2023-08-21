@@ -13,7 +13,7 @@ const Post = ({
   userIdfromPost,
   name,
   pictureUrl,
-  getData
+  getData,
 }) => {
   const { pathname } = useLocation();
 
@@ -276,8 +276,12 @@ const Post = ({
           <ModalContent>
             <p>Are you sure you want to delete this post?</p>
             <div>
-              <button data-test="cancel" cancel onClick={handleDeleteCancel}>No, go back</button>
-              <button data-test="confirm" onClick={handleDeleteConfirm}>Yes, delete it</button>
+              <button data-test="cancel" cancel onClick={handleDeleteCancel}>
+                No, go back
+              </button>
+              <button data-test="confirm" onClick={handleDeleteConfirm}>
+                Yes, delete it
+              </button>
             </div>
           </ModalContent>
         </Modal>
@@ -288,14 +292,16 @@ const Post = ({
         </div>
         <div>
           {isLiked ? (
-            <StyledFilledHeart data-test="like-btn"
+            <StyledFilledHeart
+              data-test="like-btn"
               pathname={pathname.slice(1, 5)}
               onClick={handleUnlikeClick}
               onMouseEnter={() => setShowLikesTooltip(true)}
               onMouseLeave={() => setShowLikesTooltip(false)}
             />
           ) : (
-            <StyledHeart data-test="like-btn"
+            <StyledHeart
+              data-test="like-btn"
               pathname={pathname.slice(1, 5)}
               onClick={handleLikeClick}
               onMouseEnter={() => setShowLikesTooltip(true)}
@@ -339,7 +345,8 @@ const Post = ({
               editPost(e);
             }}
           >
-            <input data-test="edit-input"
+            <input
+              data-test="edit-input"
               onChange={(e) => setEditedPostText(e.target.value)}
               value={editedPostText}
               disabled={loading}
@@ -415,15 +422,15 @@ const ModalContent = styled.div`
     line-height: 41px;
     color: white;
   }
-  div{
+  div {
     margin-top: 24px;
     display: flex;
     justify-content: center;
-    button:nth-child(1){
+    button:nth-child(1) {
       background-color: #fff;
       color: #007bff;
     }
-    button{
+    button {
       color: white;
       border: none;
       border-radius: 4px;
@@ -433,7 +440,7 @@ const ModalContent = styled.div`
       font-size: 16px;
       margin: 0 10px;
       cursor: pointer;
-      background-color:#007BFF;
+      background-color: #007bff;
       color: #fff;
 
       &:hover {
@@ -444,17 +451,19 @@ const ModalContent = styled.div`
 `;
 
 const LikesTooltip = styled.div`
+  display: flex;
   position: absolute;
   bottom: calc(30% + 30px);
   left: 7%;
   transform: translateX(-45%);
-  width: 50% !important;
+  width: 36% !important;
+  min-width: 30%;
   height: 20% !important;
+
   background: rgba(255, 255, 255, 0.9);
   border-radius: 3px;
   display: flex;
-  align-items: center;
-  gap: 4px;
+  flex-direction: column;
   padding: 4px 8px;
   white-space: nowrap;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
@@ -464,7 +473,7 @@ const LikesTooltip = styled.div`
     content: "";
     position: absolute;
     top: -20px;
-    left: 40%;
+    left: 36%;
     transform: translateX(-50%);
 
     transform: rotate(180deg);

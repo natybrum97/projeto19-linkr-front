@@ -113,7 +113,6 @@ const StyledHashtagPosts = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
 
   h1 {
     @media (min-width: 1200px) {
