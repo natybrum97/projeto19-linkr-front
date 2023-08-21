@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import GlobalStyle from "../style/GlobalStyle";
@@ -32,7 +32,11 @@ export default function Login() {
       console.log(erro.response.data);
       alert(erro.response.data.message || erro.response.data);
     });
-  }
+  };
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) navigate('/timeline');
+  }, [])
 
   return (
     <Container>
