@@ -172,10 +172,10 @@ const StyledTimeLine = styled.div`
       font-size: 43px;
       line-height: 64px;
       align-self: center;
-      margin-left: -344px;
+      margin-left: -670px;
     }
     margin: 16px;
-    text-align: left;
+    align-self: flex-start;
     font-family: Oswald;
     font-size: 33px;
     font-weight: 700;
@@ -301,9 +301,10 @@ const StyledPostForm = styled.form`
   input {
     @media (min-width: 1200px) {
       width: 80%;
-      margin-left: 46px;
+      margin-left: 68px;
       margin-top: -5px;
     }
+    margin-left: 14px;
     width: 90%;
     height: 30px;
     border-radius: 5px;
@@ -325,8 +326,9 @@ const StyledPostForm = styled.form`
   textarea {
     @media (min-width: 1200px) {
       width: 80%;
-      margin-left: 46px;
+      margin-left: 68px;
     }
+    margin-left: 14px;
     margin-top: 4px;
     width: 90%;
     height: 47px;

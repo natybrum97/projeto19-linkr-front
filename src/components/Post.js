@@ -275,8 +275,10 @@ const Post = ({
         <Modal onClick={() => setShowDeleteModal(false)}>
           <ModalContent>
             <p>Are you sure you want to delete this post?</p>
-            <Button data-test="cancel" cancel onClick={handleDeleteCancel}>No, go back</Button>
-            <Button data-test="confirm" onClick={handleDeleteConfirm}>Yes, delete it</Button>
+            <div>
+              <button data-test="cancel" cancel onClick={handleDeleteCancel}>No, go back</button>
+              <button data-test="confirm" onClick={handleDeleteConfirm}>Yes, delete it</button>
+            </div>
           </ModalContent>
         </Modal>
       )}
@@ -391,7 +393,7 @@ const ModalContent = styled.div`
     max-width: 40%;
   }
   max-width: 75%;
-  height: 180px;
+  height: auto;
   border-radius: 50px;
   background-color: #333;
   padding: 20px;
@@ -400,18 +402,8 @@ const ModalContent = styled.div`
   text-align: center;
 
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  button{
-    position: absolute;
-    margin-top: 120px;
-  }
-  button:nth-child(3){
-    margin-left: 160px;
-  }
-  button:nth-child(2){
-    margin-left: -140px;
-  }
   p {
     @media (min-width: 1200px) {
       font-size: 30px;
@@ -423,22 +415,31 @@ const ModalContent = styled.div`
     line-height: 41px;
     color: white;
   }
-`;
+  div{
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    button:nth-child(1){
+      background-color: #fff;
+      color: #007bff;
+    }
+    button{
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 16px;
+      height: auto;
+      width: 130px;
+      font-size: 16px;
+      margin: 0 10px;
+      cursor: pointer;
+      background-color:#007BFF;
+      color: #fff;
 
-const Button = styled.button`
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  width: 130px;
-  font-size: 16px;
-  margin: 0 10px;
-  cursor: pointer;
-  background-color: ${({ cancel }) => (cancel ? "#fff" : "#007BFF")};
-  color: ${({ cancel }) => (cancel ? "#007BFF" : "#fff")};
-
-  &:hover {
-    opacity: 0.8;
+      &:hover {
+        opacity: 0.8;
+      }
+    }
   }
 `;
 
@@ -622,6 +623,7 @@ const PostInfo = styled.div`
 `;
 
 const PostText = styled.div`
+  width: 100%;
   margin-left: 13px;
   display: flex;
   flex-direction: column;
@@ -682,7 +684,7 @@ const PostText = styled.div`
 `;
 
 const StyledHeart = styled(AiOutlineHeart)`
-  position: ${({ pathname }) => (pathname === "user" ? "absolute" : "unset")};
+  position: absolute;
   left: 23px;
   cursor: pointer;
   margin-top: 10px;
@@ -696,7 +698,7 @@ const StyledHeart = styled(AiOutlineHeart)`
 `;
 
 const StyledFilledHeart = styled(AiFillHeart)`
-  position: ${({ pathname }) => (pathname === "user" ? "absolute" : "unset")};
+  position: absolute;
   left: 23px;
   cursor: pointer;
   margin-top: 10px;

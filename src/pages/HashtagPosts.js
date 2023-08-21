@@ -1,11 +1,10 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { styled } from "styled-components";
+import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
 import Trending from "../components/Trending";
-import PostHashtag from "../components/PostHashtag";
-import { useContext } from "react";
 import { LoginContext } from "../contexts/LoginContext";
 
 const HashtagPosts = () => {
@@ -61,7 +60,7 @@ const HashtagPosts = () => {
           {posts !== null && posts.length > 0 && (
             <ul>
               {posts.map((p) => (
-                <PostHashtag
+                <Post
                   key={p.id}
                   id={p.id}
                   postUrl={p.postUrl}
@@ -114,7 +113,6 @@ const StyledHashtagPosts = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 
   h1 {
@@ -122,7 +120,7 @@ const StyledHashtagPosts = styled.div`
       font-size: 43px;
       line-height: 64px;
       align-self: center;
-      margin-left: -344px;
+      margin-left: -690px;
     }
     margin: 16px;
     text-align: left;
@@ -133,10 +131,12 @@ const StyledHashtagPosts = styled.div`
     color: #ffffff;
   }
   ul {
+    margin-top: -10px;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 20px;
   }
 `;
 

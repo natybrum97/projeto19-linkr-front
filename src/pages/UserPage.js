@@ -3,8 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
-import api from "../services/api";
 import Trending from "../components/Trending";
+import api from "../services/api";
 
 export default function UserPage() {
   const authToken = localStorage.getItem("token");
@@ -43,10 +43,10 @@ export default function UserPage() {
             <h4>404 Not Found</h4>
           ) : (
             posts.userPosts.length >= 0 && (
-              <>
+              <div>
                 <img src={posts.user.pictureUrl} alt="profilePicture" />
                 <h1>{posts.user.name}’s posts</h1>
-              </>
+              </div>
             )
           )}
         </Container>
@@ -87,18 +87,25 @@ const PagesContainer = styled.div`
 `;
 
 const Container = styled.div`
-  width: 563px;
-  max-width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 20px;
-
-  img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-left: 10px;
+  div{
+    @media (min-width: 1200px) {
+      margin-left: -266px;
+    }
+    width: 563px;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px;
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-left: 10px;
+    }
+    h1 {
+      min-width: 100%;
+    }
   }
 `;
 
@@ -123,7 +130,7 @@ const StyledContainer = styled.div`
 `;
 
 const UserTimeLine = styled.div`
-  max-width: 100%;
+  overflow-x: hidden;
   min-height: calc(100vh - 90px);
   padding-top: 90px;
   background-color: #333333;
@@ -157,6 +164,7 @@ const UserTimeLine = styled.div`
   }
 
   ul {
+    margin-top: -9px;
     width: 100%;
     display: flex;
     flex-direction: column;

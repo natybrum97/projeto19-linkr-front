@@ -1,7 +1,7 @@
 import axios from "axios";
-import { styled } from "styled-components";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { styled } from "styled-components";
 
 export default function Trending({ posts }) {
   const [hashtagsTrending, setTrending] = useState([]);
@@ -21,6 +21,7 @@ export default function Trending({ posts }) {
   return (
     <StyledTrending data-test="trending">
       <h2>trending</h2>
+      <hr></hr>
 
       {hashtagsTrending.length === 0 ? (
         <h2>There are no trends yet</h2>
@@ -42,14 +43,25 @@ export default function Trending({ posts }) {
 }
 
 const StyledTrending = styled.div`
+  margin-top: 20px;
   background-color: #171717;
-  display: flex;
+  @media (min-width: 1200px) {
+    display: flex;
+  }
+  hr{
+    margin-top: 0px;
+    background-color: #484848;
+    width: 99%;
+  }
+  display: none;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   border-radius: 10px;
 
-  width: 200px;
+  padding-bottom: 8px;
+  min-width: 301px;
+  max-width: 301px;
 
   h2 {
     color: #ffffff;
@@ -76,9 +88,10 @@ const StyledList = styled.div`
   P {
     color: #ffffff;
     font-family: Lato;
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 700;
     margin-left: 8px;
+    line-height: 23px;
     margin-bottom: 3px;
   }
 `;
