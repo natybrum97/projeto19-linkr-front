@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
+import Trending from "../components/Trending";
 import { LoginContext } from "../contexts/LoginContext";
 import api from "../services/api";
 
@@ -11,8 +12,8 @@ export default function UserPage() {
 
   useEffect(() => {
     isLoged();
-  })
-  
+  });
+
   const authToken = localStorage.getItem("token");
   const { id } = useParams();
 
@@ -37,20 +38,25 @@ export default function UserPage() {
         <SearchBar />
       </SearchBarWrapper>
 
-      <Container>
-        {posts === null ? (
-          <h4>Loading...</h4>
-        ) : posts === undefined ? (
-          <h4>404 Not Found</h4>
-        ) : (
-          posts.userPosts.length >= 0 && (
-            <>
-              <img src={posts.user.pictureUrl} alt="profilePicture" />
-              <h1>{posts.user.name}’s posts</h1>
-            </>
-          )
-        )}
-      </Container>
+      <PagesContainer>
+        <Container>
+          {posts === null ? (
+            <h4>Loading...</h4>
+          ) : posts === undefined ? (
+            <h4>404 Not Found</h4>
+          ) : (
+            posts.userPosts.length >= 0 && (
+              <>
+                <img src={posts.user.pictureUrl} alt="profilePicture" />
+                <h1>{posts.user.name}’s posts</h1>
+              </>
+            )
+          )}
+        </Container>
+        
+      </PagesContainer>
+
+      <Trending />
 
       {posts !== null && posts !== undefined && posts.userPosts.length > 0 ? (
         <ul>
@@ -72,9 +78,16 @@ export default function UserPage() {
         posts !== undefined &&
         posts.userPosts.length === 0 && <h3>No Posts Yet</h3>
       )}
+
     </UserTimeLine>
   );
 }
+
+const PagesContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Container = styled.div`
   width: 563px;
@@ -111,7 +124,7 @@ const UserTimeLine = styled.div`
   padding-top: 90px;
   background-color: #333333;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 10px;
 
@@ -144,7 +157,7 @@ const UserTimeLine = styled.div`
     flex-direction: column;
     align-items: center;
     margin-bottom: 20px;
-    div{
+    div {
       width: 100%;
     }
   }

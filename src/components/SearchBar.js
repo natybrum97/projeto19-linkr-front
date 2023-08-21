@@ -15,19 +15,20 @@ export default function SearchBar() {
     console.log(value);
 
     if (value && value.length >= 3) {
-    
-      axios.get(`${process.env.REACT_APP_API_URL}/search-users?query=${value}`).then((response) => {
-      console.log(response.data);
-      setSearchResults(response.data);
-    }).catch((error) => {
-      console.error(error);
-      setSearchResults([]); 
-    });
-  } else {
-    setSearchResults([]);
-  }
-
-}
+      axios
+        .get(`${process.env.REACT_APP_API_URL}/search-users?query=${value}`)
+        .then((response) => {
+          console.log(response.data);
+          setSearchResults(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+          setSearchResults([]);
+        });
+    } else {
+      setSearchResults([]);
+    }
+  };
 
   return (
     <Container>
