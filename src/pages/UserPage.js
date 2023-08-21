@@ -54,6 +54,7 @@ export default function UserPage() {
 
       <StyledContainer>
         {posts !== null && posts !== undefined && posts.userPosts.length > 0 ? (
+          <>
           <ul>
             {posts.userPosts.map((p) => (
               <Post
@@ -68,13 +69,14 @@ export default function UserPage() {
               />
             ))}
           </ul>
+          <Trending />
+          </>
         ) : (
           posts !== null &&
           posts !== undefined &&
-          posts.userPosts.length === 0 && <h3>No Posts Yet</h3>
+          posts.userPosts.length === 0 && <h4>No Posts Yet</h4>
         )}
 
-        <Trending />
       </StyledContainer>
     </UserTimeLine>
   );
