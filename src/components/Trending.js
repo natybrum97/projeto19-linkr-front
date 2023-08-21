@@ -14,12 +14,12 @@ export default function Trending() {
       console.log("resposta: ", res.data);
     });
     promise.catch((err) => {
-      alert(err.response.data);
+      alert(err.response.data.message);
     });
   }, []);
 
   if (!hashtagsTrending) {
-    <h4>There are no trends yet</h4>;
+    <h2>There are no trends yet</h2>;
   }
 
   return (
@@ -30,7 +30,7 @@ export default function Trending() {
         <StyledList>
           {hashtagsTrending.map((trend, i) => (
             <StyledLink
-              data-teste="hashtag"
+              data-test="hashtag"
               key={i}
               to={`/hashtag/${trend.hashtagText.replace("#", "")}`}
             >
@@ -44,11 +44,11 @@ export default function Trending() {
 }
 
 const StyledTrending = styled.div`
-  background-color: blue;
+  background-color: #171717;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   border-radius: 10px;
 
   width: 200px;
@@ -59,19 +59,12 @@ const StyledTrending = styled.div`
     font-size: 27px;
     font-weight: 700;
     line-height: 40px;
-  }
-
-  P {
-    color: #ffffff;
-    font-family: Lato;
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 23px;
+    margin-bottom: 5px;
+    padding-left: 8px;
   }
 `;
 
 const StyledLink = styled(Link)`
-  background-color: red;
   text-decoration: none;
   color: white;
 `;
@@ -79,6 +72,15 @@ const StyledLink = styled(Link)`
 const StyledList = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
+  justify-content: center;
+  align-items: flex-start;
+
+  P {
+    color: #ffffff;
+    font-family: Lato;
+    font-size: 20px;
+    font-weight: 700;
+    margin-left: 8px;
+    margin-bottom: 3px;
+  }
 `;
