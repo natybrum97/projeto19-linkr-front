@@ -271,15 +271,11 @@ const Post = ({
         </>
       )}
       {showDeleteModal && (
-        <Modal>
+        <Modal onClick={() => setShowDeleteModal(false)}>
           <ModalContent>
-            <p>Tem certeza que deseja deletar este post?</p>
-            <ButtonContainer>
-              <Button cancel onClick={handleDeleteCancel}>
-                Cancelar
-              </Button>
-              <Button onClick={handleDeleteConfirm}>Confirmar</Button>
-            </ButtonContainer>
+            <p>Are you sure you want to delete this post?</p>
+            <Button cancel onClick={handleDeleteCancel}>No, go back</Button>
+            <Button onClick={handleDeleteConfirm}>Yes, delete it</Button>
           </ModalContent>
         </Modal>
       )}
@@ -375,6 +371,7 @@ const Post = ({
 export default Post;
 
 const Modal = styled.div`
+  cursor: pointer;
   position: fixed;
   top: 0;
   left: 0;
@@ -388,14 +385,12 @@ const Modal = styled.div`
 
   z-index: 1000;
 `;
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
 const ModalContent = styled.div`
-  width: 597px;
-  height: 262px;
+  @media (min-width: 1200px) {
+    max-width: 40%;
+  }
+  max-width: 75%;
+  height: 180px;
   border-radius: 50px;
   background-color: #333;
   padding: 20px;
@@ -406,10 +401,25 @@ const ModalContent = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
+  button{
+    position: absolute;
+    margin-top: 120px;
+  }
+  button:nth-child(3){
+    margin-left: 160px;
+  }
+  button:nth-child(2){
+    margin-left: -140px;
+  }
   p {
-    font-size: 18px;
-    margin-bottom: 20px;
+    @media (min-width: 1200px) {
+      font-size: 30px;
+      font-weight: 700;
+    }
+    font-family: Lato;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 41px;
     color: white;
   }
 `;
@@ -419,6 +429,7 @@ const Button = styled.button`
   border: none;
   border-radius: 4px;
   padding: 8px 16px;
+  width: 130px;
   font-size: 16px;
   margin: 0 10px;
   cursor: pointer;
