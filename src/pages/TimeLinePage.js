@@ -1,22 +1,23 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
+import { IoReloadOutline } from "react-icons/io5";
 import { styled } from "styled-components";
+import { useInterval } from 'usehooks-ts';
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
 import Trending from "../components/Trending";
 import { LoginContext } from "../contexts/LoginContext";
 
 const TimeLinePage = () => {
+
+  const { isLoged } = useContext(LoginContext);
+
   const [postInput, setPostInput] = useState({
     postUrl: "",
     postText: "",
   });
-
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState(null);
-
-  const { isLoged } = useContext(LoginContext);
-
   const getPosts = async () => {
     try {
       const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post`);
@@ -36,6 +37,22 @@ const TimeLinePage = () => {
     isLoged();
     getPosts();
   }, []);
+
+  const [newPosts, setNewPosts] = useState([]);
+  const hasPosts = posts !== null && posts.length > 0 && posts !== "You don't follow anyone yet. Search for new friends!";
+  useInterval( async () => {      
+    if (!hasPosts) return;
+    try {
+      const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/getNewPosts`, posts.map(({id}) => id));
+      setNewPosts(data);
+    } catch (err) {
+      alert("An error occured while trying to fetch new posts, please refresh the page");
+    }
+  }, 15000);
+  const mergeNewPosts = () => {
+    setPosts([...newPosts, ...posts]);
+    setNewPosts([]);
+  };
 
   const submitPost = async (e) => {
     e.preventDefault();
@@ -106,6 +123,13 @@ const TimeLinePage = () => {
             </button>
           </StyledPostForm>
 
+          {newPosts.length > 0 
+            &&
+              <LoadMorePostsButton onClick={mergeNewPosts}>
+                <p>{newPosts.length} new posts, load more!</p> <StyledMergePosts />
+              </LoadMorePostsButton>
+          }
+
           {
             (posts === null) 
               ? <h4 data-test="message">Loading...</h4> 
@@ -115,7 +139,7 @@ const TimeLinePage = () => {
                   && <h4 data-test="message">No posts found from your friends</h4>
           }
 
-          {posts !== null && posts.length > 0 && posts !== "You don't follow anyone yet. Search for new friends!" 
+          {hasPosts 
             && (
               <ul>
                 {posts.map((p) => (
@@ -352,4 +376,41 @@ const StyledPostForm = styled.form`
       opacity: 0.5;
     }
   }
+`;
+
+const LoadMorePostsButton =  styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @media (min-width: 1200px) {
+    min-width: 500px;
+    max-width: 500px;
+    border-radius: 16px;
+    margin-bottom: -15px;
+  }
+  cursor: pointer;
+  border: none;
+  min-width: 100vw;
+  margin-top: 30px;
+  height: 46px;
+  margin-bottom: -12px;
+  background-color: #1877F2;
+  box-shadow: 0px 4px 4px 0px #00000040;
+  &:hover{
+    transition: 400ms;
+    opacity: 0.85;
+  }
+  p{
+    font-family: Lato;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19px;
+    color: #FFFFFF;
+  }
+`;
+
+const StyledMergePosts = styled(IoReloadOutline)`
+  color: #FFFFFF;
+  font-size: 18px;
+  margin-left: 4px;
 `;
