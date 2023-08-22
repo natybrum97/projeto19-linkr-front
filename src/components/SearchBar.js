@@ -14,7 +14,11 @@ export default function SearchBar() {
 
     if (value && value.length >= 3) {
       axios
-        .get(`${process.env.REACT_APP_API_URL}/search-users?query=${value}`)
+        .get(`${process.env.REACT_APP_API_URL}/search-users?query=${value}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => setSearchResults(response.data))
         .catch((error) => {
           console.error(error);
@@ -32,7 +36,7 @@ export default function SearchBar() {
   }
 
   return (
-    <Container>
+    <Container length={searchResults.length} term={searchTerm.length}>
       <div>
         <DebounceInput
           data-test="search"
@@ -66,7 +70,7 @@ export default function SearchBar() {
                     src={result.pictureUrl}
                     alt={`${result.username}'s profile`}
                   />
-                  <span>{result.username}</span>
+                  <span>{result.username}{result.followedByYou && <span> • following</span>}</span>
                 </li>
               ))
             : searchTerm.length >= 3 && (
@@ -90,14 +94,15 @@ const Container = styled.form`
   margin: 0 15px;
   padding: 10px;
   background: #ffffff;
-  border-radius: 8px;
   z-index: 2;
+  border-radius: ${({ length, term }) => (length !== 0 || term > 3) ? '8px 8px 0 0' : '8px'};
 
   input {
     width: 100%;
     font-size: 20px;
     border: none;
     position: relative;
+    margin-bottom: 4px;
 
     &:focus {
       outline: 0;
@@ -151,7 +156,9 @@ const Container = styled.form`
         font-size: 16px;
         color: #515151;
         width: 100%;
-
+        span{
+          color: #C5C5C5;
+        }
         p {
           display: flex;
           justify-content: center;

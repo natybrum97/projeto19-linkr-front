@@ -101,21 +101,21 @@ export default function UserPage() {
       <StyledContainer>
         {posts !== null && posts !== undefined && posts.userPosts.length > 0 ? (
           <>
-          <ul>
-            {posts.userPosts.map((p) => (
-              <Post
-                key={p.id}
-                id={p.id}
-                postUrl={p.postUrl}
-                postText={p.postText}
-                userIdfromPost={posts.user.id}
-                name={posts.user.name}
-                pictureUrl={posts.user.pictureUrl}
-                getData={LoadPosts}
-              />
-            ))}
-          </ul>
-          <Trending />
+            <ul>
+              {posts.userPosts.map((p) => (
+                <Post
+                  key={p.id}
+                  id={p.id}
+                  postUrl={p.postUrl}
+                  postText={p.postText}
+                  userIdfromPost={posts.user.id}
+                  name={posts.user.name}
+                  pictureUrl={posts.user.pictureUrl}
+                  getData={LoadPosts}
+                />
+              ))}
+            </ul>
+            <Trending />
           </>
         ) : (
           posts !== null &&
@@ -136,11 +136,13 @@ const PagesContainer = styled.div`
 
 const Container = styled.div`
   @media (min-width: 1200px) {
-    margin-left: 526px;
+    width: 526px;
+    min-width: unset;
+    margin-left: -69%;
   }
   min-width: 100vw;
-  margin-left: -30px;
   div {
+    min-width: 100vw;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -153,7 +155,8 @@ const Container = styled.div`
     }
     button{
       @media (min-width: 1200px) {
-        right: 290px;
+        position: absolute;
+        right: 328px;
         margin-top: unset;
       }
       cursor: pointer;
