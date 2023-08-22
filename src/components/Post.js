@@ -1,7 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { AiFillHeart, AiOutlineComment, AiOutlineHeart } from "react-icons/ai";
 import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
+import { FaRetweet } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -213,6 +214,7 @@ const Post = ({
       setOpenEditPost(false);
       setLoading(false);
       setIfEdited((previous) => previous + 1);
+      getData();
     } catch (err) {
       alert("não foi possível salvar as alterações");
       setLoading(false);
@@ -330,7 +332,14 @@ const Post = ({
             </LikesTooltip>
           )}
         </div>
-        <p data-test="counter">{likeCount} likes</p>
+        <StyledP data-test="counter">{likeCount} likes</StyledP>
+
+        <StyledComment />
+        <StyledP>{`${0}\n comments`}</StyledP>
+
+        <StyledRepost />
+        <StyledP>{`${0}\n re-posts`}</StyledP>
+
       </PostInfo>
 
       <PostText>
@@ -451,7 +460,10 @@ const ModalContent = styled.div`
 `;
 
 const LikesTooltip = styled.div`
-  display: flex;
+  @media (min-width: 1200px) {
+    display: flex;
+  }
+  display: none;
   position: absolute;
   bottom: calc(30% + 30px);
   left: 7%;
@@ -462,7 +474,6 @@ const LikesTooltip = styled.div`
 
   background: rgba(255, 255, 255, 0.9);
   border-radius: 3px;
-  display: flex;
   flex-direction: column;
   padding: 4px 8px;
   white-space: nowrap;
@@ -591,15 +602,13 @@ const Snippet = styled(Link)`
 const StyledPost = styled.li`
   @media (min-width: 1200px) {
     margin-top: 30px;
-    width: 500px;
+    min-width: 500px;
     border-radius: 10px;
     height: 276px;
   }
   position: relative;
   margin-top: 13px;
-  min-width: 100%;
-  max-width: 100%;
-  width: 100%;
+  min-width: 100vw;
   height: 220px;
   background-color: #171717;
   display: flex;
@@ -630,6 +639,9 @@ const PostInfo = styled.div`
     font-weight: 400;
     line-height: 11px;
     color: #ffffff;
+  }
+  p:nth-child(5){
+    margin-top: -4px;
   }
 `;
 
@@ -716,13 +728,43 @@ const StyledFilledHeart = styled(AiFillHeart)`
   margin-bottom: 6px;
   font-size: 20px;
   color: #ac0000;
-  /* &:hover {
+  &:hover {
     transition-duration: 400ms;
     color: #ffffff;
     ${StyledPost}:hover & {
       color: #ffffff;
     }
-  } */
+  }
+`;
+
+const StyledP = styled.p`
+  margin-top: -8px;
+  margin-bottom: 8px;
+  text-align: center;
+`;
+
+const StyledComment = styled(AiOutlineComment)`
+  left: 23px;
+  cursor: pointer;
+  margin-bottom: 6px;
+  font-size: 20px;
+  color: #ffffff;
+  &:hover {
+    transition-duration: 400ms;
+    color: gray;
+  }
+`;
+
+const StyledRepost = styled(FaRetweet)`
+  left: 23px;
+  cursor: pointer;
+  margin-bottom: 6px;
+  font-size: 20px;
+  color: #ffffff;
+  &:hover {
+    transition-duration: 400ms;
+    color: gray;
+  }
 `;
 
 const StyledLink = styled(Link)`

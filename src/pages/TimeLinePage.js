@@ -6,7 +6,7 @@ import SearchBar from "../components/SearchBar";
 import Trending from "../components/Trending";
 import { LoginContext } from "../contexts/LoginContext";
 
-const TimeLine = () => {
+const TimeLinePage = () => {
   const [postInput, setPostInput] = useState({
     postUrl: "",
     postText: "",
@@ -138,7 +138,7 @@ const TimeLine = () => {
   );
 };
 
-export default TimeLine;
+export default TimeLinePage;
 
 const SearchBarWrapper = styled.span`
   width: 100%;

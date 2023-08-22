@@ -1,22 +1,18 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
 import Trending from "../components/Trending";
 import { LoginContext } from "../contexts/LoginContext";
 
-const HashtagPosts = () => {
+const HashtagsPage = () => {
   const [posts, setPosts] = useState(null);
 
   const { hashtag } = useParams();
 
   const { isLoged } = useContext(LoginContext);
-
-  useEffect(() => {
-    isLoged();
-  });
 
   const getPosts = async () => {
     try {
@@ -24,22 +20,14 @@ const HashtagPosts = () => {
         `${process.env.REACT_APP_API_URL}/hashtag/${hashtag}`
       );
       setPosts(data);
-      console.log(data);
-    } catch ({
-      response: {
-        status,
-        statusText,
-        data: { message },
-      },
-    }) {
-      alert(
-        "An error occured while trying to fetch the posts, please refresh the page"
-      );
+    } catch ({ response }) {
+      setPosts(response.data.message);
     }
   };
   useEffect(() => {
+    isLoged();
     getPosts();
-  }, []);
+  }, [hashtag]);
 
   return (
     <StyledHashtagPosts>
@@ -54,10 +42,10 @@ const HashtagPosts = () => {
           {posts === null ? (
             <h4>Loading...</h4>
           ) : (
-            posts.length === 0 && <h4>There are no posts yet</h4>
+            posts === 'Hashtag não encontrada!' && <h4>There are no posts with #{hashtag} yet</h4>
           )}
 
-          {posts !== null && posts.length > 0 && (
+          {posts !== null && posts !== 'Hashtag não encontrada!' && (
             <ul>
               {posts.map((p) => (
                 <Post
@@ -68,19 +56,20 @@ const HashtagPosts = () => {
                   userIdfromPost={p.user.id}
                   name={p.user.name}
                   pictureUrl={p.user.pictureUrl}
+                  getData={getPosts}
                 />
               ))}
             </ul>
           )}
         </StyledDiv>
 
-        <Trending />
+        <Trending posts={posts}/>
       </StyledContainer>
     </StyledHashtagPosts>
   );
 };
 
-export default HashtagPosts;
+export default HashtagsPage;
 
 const SearchBarWrapper = styled.span`
   width: 100%;
@@ -119,8 +108,9 @@ const StyledHashtagPosts = styled.div`
       font-size: 43px;
       line-height: 64px;
       align-self: center;
-      margin-left: -690px;
+      margin-left: 600px;
     }
+    min-width: 100%;
     margin: 16px;
     text-align: left;
     font-family: Oswald;

@@ -7,6 +7,8 @@ export default function Trending({ posts }) {
   const [hashtagsTrending, setTrending] = useState([]);
 
   useEffect(() => {
+    if (posts === 'Hashtag não encontrada!') return setTrending([]);
+
     const promise = axios.get(`${process.env.REACT_APP_API_URL}/trending`);
 
     promise.then((res) => {

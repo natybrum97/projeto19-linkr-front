@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
 import Trending from "../components/Trending";
+import { LoginContext } from "../contexts/LoginContext";
 import api from "../services/api";
 
 export default function UserPage() {
   const authToken = localStorage.getItem("token");
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const { isLoged } = useContext(LoginContext);
 
   const [posts, setPosts] = useState(null);
 
@@ -26,6 +29,7 @@ export default function UserPage() {
   }
 
   useEffect(() => {
+    isLoged();
     LoadPosts(authToken, id);
   });
 
@@ -89,12 +93,12 @@ const PagesContainer = styled.div`
 `;
 
 const Container = styled.div`
+  @media (min-width: 1200px) {
+    margin-left: 526px;
+  }
+  min-width: 100vw;
+  margin-left: -30px;
   div {
-    @media (min-width: 1200px) {
-      margin-left: -266px;
-    }
-    width: 515px;
-    max-width: 100%;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -104,9 +108,6 @@ const Container = styled.div`
       height: 50px;
       border-radius: 50%;
       margin-left: 10px;
-    }
-    h1 {
-      min-width: 100%;
     }
   }
 `;
@@ -138,7 +139,6 @@ const UserTimeLine = styled.div`
   background-color: #333333;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   gap: 10px;
 
