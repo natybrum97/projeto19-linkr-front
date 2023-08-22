@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
@@ -26,12 +27,45 @@ export default function UserPage() {
           ? navigate("/")
           : console.log(error.response.data)
       );
+  };
+
+  const [loading, setLoading] = useState(false);
+  const notSameUser = localStorage.getItem("userid") !== id;
+  const [followState, setFollowState] = useState(null);
+  const getFollows = async () => {
+    try {
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/follow/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setFollowState(data.length);
+      setLoading(false);
+    } catch (err) {
+      alert('não foi possível executar a operação');
+      setLoading(false);
+    }
+  };
+  const followUnfollow = async () => {
+    setLoading(true);
+    try {
+      await axios.post(`${process.env.REACT_APP_API_URL}/follow`, {idFollowed: id}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      getFollows();
+    } catch (err) {
+      alert('não foi possível executar a operação');
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
+    if (notSameUser) getFollows();
     isLoged();
     LoadPosts(authToken, id);
-  });
+  }, []);
 
   return (
     <UserTimeLine>
@@ -40,7 +74,7 @@ export default function UserPage() {
       </SearchBarWrapper>
 
       <PagesContainer>
-        <Container>
+        <Container followState={followState}>
           {posts === null ? (
             <h4>Loading...</h4>
           ) : posts === undefined ? (
@@ -50,6 +84,14 @@ export default function UserPage() {
               <div>
                 <img src={posts.user.pictureUrl} alt="profilePicture" />
                 <h1>{posts.user.name}’s posts</h1>
+                {notSameUser && followState !== null 
+                  && 
+                  <button 
+                    onClick={followUnfollow}
+                    disabled={loading}
+                  >{followState === 0 ? 'Follow' : 'Unfollow'}
+                  </button>
+                }
               </div>
             )
           )}
@@ -108,6 +150,34 @@ const Container = styled.div`
       height: 50px;
       border-radius: 50%;
       margin-left: 10px;
+    }
+    button{
+      @media (min-width: 1200px) {
+        right: 290px;
+        margin-top: unset;
+      }
+      cursor: pointer;
+      position: absolute;
+      margin-top: 71px;
+      right: 20px;
+      width: 112px;
+      height: 31px;
+      border-radius: 5px;
+      background-color: ${({ followState }) => followState === 0 ? '#1877F2' : '#FFFFFF'};
+      font-family: Lato;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 17px;
+      color: ${({ followState }) => followState === 0 ? '#FFFFFF' : '#1877F2'};
+      border: none;
+      &:hover{
+        opacity: 0.85;
+        transition-duration: 400ms;
+      }
+      &:disabled {
+        cursor: default;
+        opacity: 0.5;
+      }
     }
   }
 `;
