@@ -93,6 +93,7 @@ const StyledContainer = styled.div`
 `;
 
 const StyledHashtagPosts = styled.div`
+  overflow-x: hidden; 
   @media (min-width: 1200px) {
     padding-top: 30px;
   }
