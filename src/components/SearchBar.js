@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { FiSearch } from "react-icons/fi";
-import { styled } from "styled-components";
-import { DebounceInput } from "react-debounce-input";
 import axios from "axios";
+import React, { useState } from "react";
+import { DebounceInput } from "react-debounce-input";
+import { FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { styled } from "styled-components";
 
 export default function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -134,6 +134,7 @@ const Container = styled.form`
     }
 
     li {
+      min-width: 100%;
       display: flex;
       align-items: center;
       gap: 10px;
