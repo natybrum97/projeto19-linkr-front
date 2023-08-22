@@ -155,14 +155,11 @@ const Container = styled.div`
     }
     button{
       @media (min-width: 1200px) {
-        position: absolute;
-        right: 328px;
         margin-top: unset;
+        margin-left: 400px;
       }
       cursor: pointer;
-      position: absolute;
       margin-top: 71px;
-      right: 20px;
       width: 112px;
       height: 31px;
       border-radius: 5px;
