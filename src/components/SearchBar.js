@@ -139,7 +139,7 @@ const Container = styled.form`
     }
 
     li {
-      min-width: 100%;
+      width: 98%;
       display: flex;
       align-items: center;
       gap: 10px;

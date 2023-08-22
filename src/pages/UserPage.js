@@ -221,12 +221,19 @@ const UserTimeLine = styled.div`
   }
 
   h4 {
-    height: 300px;
-    display: flex;
-    align-items: center;
-    font-size: 25px;
-    margin-right: auto;
-    margin-left: auto;
+    @media (min-width: 1200px) {
+      font-size: 30px;
+      line-height: 40px;
+    }
+    text-align: center;
+    max-width: 500px;
+    margin-top: 20px;
+    align-self: center;
+    font-family: Oswald;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 38px;
+    color: #ffffff;
   }
 
   @media (max-width: 1200px) {

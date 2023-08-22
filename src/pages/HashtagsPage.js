@@ -136,9 +136,11 @@ const StyledDiv = styled.div`
   flex-direction: column;
   h4 {
     @media (min-width: 1200px) {
-      font-size: 34px;
-      line-height: 46px;
+      font-size: 30px;
+      line-height: 40px;
     }
+    text-align: center;
+    max-width: 500px;
     margin-top: 20px;
     align-self: center;
     font-family: Oswald;

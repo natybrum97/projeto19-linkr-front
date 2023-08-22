@@ -106,29 +106,31 @@ const TimeLinePage = () => {
             </button>
           </StyledPostForm>
 
-          {posts === null ? (
-            <h4 data-test="message">Loading...</h4>
-          ) : (
-            posts.length === 0 && (
-              <h4 data-test="message">There are no posts yet</h4>
-            )
-          )}
+          {
+            (posts === null) 
+              ? <h4 data-test="message">Loading...</h4> 
+              : (posts === "You don't follow anyone yet. Search for new friends!")
+                ? <h4 data-test="message">You don't follow anyone yet. Search for new friends!</h4> 
+                : (posts.length === 0) 
+                  && <h4 data-test="message">No posts found from your friends</h4>
+          }
 
-          {posts !== null && posts.length > 0 && (
-            <ul>
-              {posts.map((p) => (
-                <Post
-                  key={p.id}
-                  id={p.id}
-                  postUrl={p.postUrl}
-                  postText={p.postText}
-                  userIdfromPost={p.user.id}
-                  name={p.user.name}
-                  pictureUrl={p.user.pictureUrl}
-                  getData={getPosts}
-                />
-              ))}
-            </ul>
+          {posts !== null && posts.length > 0 && posts !== "You don't follow anyone yet. Search for new friends!" 
+            && (
+              <ul>
+                {posts.map((p) => (
+                  <Post
+                    key={p.id}
+                    id={p.id}
+                    postUrl={p.postUrl}
+                    postText={p.postText}
+                    userIdfromPost={p.user.id}
+                    name={p.user.name}
+                    pictureUrl={p.user.pictureUrl}
+                    getData={getPosts}
+                  />
+                ))}
+              </ul>
           )}
         </StyledLeftTimeline>
 
@@ -193,11 +195,20 @@ const StyledDiv = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+`;
+
+const StyledLeftTimeline = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   h4 {
     @media (min-width: 1200px) {
-      font-size: 34px;
-      line-height: 46px;
+      font-size: 30px;
+      line-height: 40px;
     }
+    text-align: center;
+    max-width: 500px;
     margin-top: 20px;
     align-self: center;
     font-family: Oswald;
@@ -206,13 +217,6 @@ const StyledDiv = styled.div`
     line-height: 38px;
     color: #ffffff;
   }
-`;
-
-const StyledLeftTimeline = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 `;
 
 const StyledContainer = styled.div`
@@ -224,7 +228,8 @@ const StyledContainer = styled.div`
 
 const StyledPostForm = styled.form`
   @media (min-width: 1200px) {
-    width: 500px;
+    min-width: 500px;
+    max-width: 500px;
     height: 178px;
     border-radius: 10px;
     margin-top: 20px;
@@ -233,9 +238,7 @@ const StyledPostForm = styled.form`
     }
   }
   position: relative;
-  min-width: 100%;
-  max-width: 100%;
-  width: 100%;
+  min-width: 100vw;
   height: 174px;
   background-color: #ffffff;
   border-radius: unset;
