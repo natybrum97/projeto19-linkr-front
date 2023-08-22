@@ -65,7 +65,7 @@ export default function UserPage() {
     if (notSameUser) getFollows();
     isLoged();
     LoadPosts(authToken, id);
-  }, []);
+  }, [id]);
 
   return (
     <UserTimeLine>
