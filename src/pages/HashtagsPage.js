@@ -109,7 +109,7 @@ const StyledHashtagPosts = styled.div`
       font-size: 43px;
       line-height: 64px;
       align-self: center;
-      margin-left: 600px;
+      margin-left: 462px;
     }
     min-width: 100%;
     margin: 16px;
