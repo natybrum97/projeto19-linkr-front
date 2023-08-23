@@ -4,6 +4,7 @@ import { IoReloadOutline } from "react-icons/io5";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { styled } from "styled-components";
 import { useInterval } from 'usehooks-ts';
+import PaginationLoading from "../components/PaginationLoading";
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
 import Trending from "../components/Trending";
@@ -160,7 +161,7 @@ const TimeLinePage = () => {
                 dataLength={posts === null ? 0 : posts.length}
                 next={getMorePosts}
                 hasMore={hasMore}
-                loader={<>loading...</>}
+                loader={<PaginationLoading/>}
               >
                 <ul>
                   {posts.map((p) => (

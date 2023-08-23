@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useParams } from "react-router-dom";
 import { styled } from "styled-components";
+import PaginationLoading from "../components/PaginationLoading";
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
 import Trending from "../components/Trending";
@@ -33,14 +34,15 @@ const HashtagsPage = () => {
   const getMorePosts = async () => {
     try {
       const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/hashtag/${hashtag}?page=${timesFetched}&qtd=${qtd}`);
-      if (data.message === 'Sem posts com essa hashtag!') return setHasmore(false);
       setPosts(previous => [...data, ...previous]);
       setTimesFetched(previous => previous + 1);
 
-    } catch (err) {
+    } catch ({ response }) {
+      if (response.data.message === 'Sem posts com essa hashtag!' || response.data.message === 'Hashtag não encontrada!') return setHasmore(false);
       alert(`An error occured while trying to fetch more ${qtd} posts, please refresh the page`);
     }
   };
+  console.log(posts);
 
   return (
     <StyledHashtagPosts>
@@ -55,32 +57,34 @@ const HashtagsPage = () => {
           {posts === null ? (
             <h4>Loading...</h4>
           ) : (
-            posts === 'Hashtag não encontrada!' && <h4>There are no posts with #{hashtag} yet</h4>
+            posts === 'Hashtag não encontrada!' || posts === 'Sem posts com essa hashtag!' 
+              && <h4>There are no posts with #{hashtag} yet</h4>
           )}
 
-          {posts !== null && posts !== 'Hashtag não encontrada!' && (
-            <InfiniteScroll
-              dataLength={posts === null ? 0 : posts.length}
-              next={getMorePosts}
-              hasMore={hasMore}
-              loader={<>loading...</>}
-            >
-              <ul>
-                {posts.map((p) => (
-                  <Post
-                    key={p.id}
-                    id={p.id}
-                    postUrl={p.postUrl}
-                    postText={p.postText}
-                    userIdfromPost={p.user.id}
-                    name={p.user.name}
-                    pictureUrl={p.user.pictureUrl}
-                    getData={getPosts}
-                  />
-                ))}
-              </ul>
-            </InfiniteScroll>
-          )}
+          {posts !== null && posts !== 'Hashtag não encontrada!' && posts !== 'Sem posts com essa hashtag!' 
+            && (
+              <InfiniteScroll
+                dataLength={posts === null ? 0 : posts.length}
+                next={getMorePosts}
+                hasMore={hasMore}
+                loader={<PaginationLoading/>}
+              >
+                <ul>
+                  {posts.map((p) => (
+                    <Post
+                      key={p.id}
+                      id={p.id}
+                      postUrl={p.postUrl}
+                      postText={p.postText}
+                      userIdfromPost={p.user.id}
+                      name={p.user.name}
+                      pictureUrl={p.user.pictureUrl}
+                      getData={getPosts}
+                    />
+                  ))}
+                </ul>
+              </InfiniteScroll>
+            )}
         </StyledDiv>
 
         <Trending posts={posts}/>
@@ -129,11 +133,10 @@ const StyledHashtagPosts = styled.div`
       font-size: 43px;
       line-height: 64px;
       align-self: center;
-      margin-left: 462px;
+      margin-left: -670px;
     }
-    min-width: 100%;
     margin: 16px;
-    text-align: left;
+    align-self: flex-start;
     font-family: Oswald;
     font-size: 33px;
     font-weight: 700;

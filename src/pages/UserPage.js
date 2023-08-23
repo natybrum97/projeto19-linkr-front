@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
+import PaginationLoading from "../components/PaginationLoading";
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
 import Trending from "../components/Trending";
@@ -120,7 +121,7 @@ export default function UserPage() {
               dataLength={posts === null ? 0 : posts.userPosts.length}
               next={getMorePosts}
               hasMore={hasMore}
-              loader={<>loading...</>}
+              loader={<PaginationLoading/>}
             >
               <ul>
                 {posts.userPosts.map((p) => (
