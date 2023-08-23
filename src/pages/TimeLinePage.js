@@ -60,9 +60,9 @@ const TimeLinePage = () => {
   const getMorePosts = async () => {
     try {
       const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post?page=${timesFetched}&qtd=${qtd}`);
+      if (data.length === 0) return setHasmore(false);
       setPosts(previous => [...data, ...previous]);
       setTimesFetched(previous => previous + 1);
-      if (data.length === 0) setHasmore(false);
 
     } catch (err) {
       alert(`An error occured while trying to fetch more ${qtd} posts, please refresh the page`);

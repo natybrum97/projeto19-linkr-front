@@ -1,25 +1,25 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
 import Trending from "../components/Trending";
 import { LoginContext } from "../contexts/LoginContext";
+const qtd = 10;
 
 const HashtagsPage = () => {
-  const [posts, setPosts] = useState(null);
-
-  const { hashtag } = useParams();
-
   const { isLoged } = useContext(LoginContext);
 
+  const [timesFetched, setTimesFetched] = useState(1);
+  const { hashtag } = useParams();
+  const [posts, setPosts] = useState(null);
   const getPosts = async () => {
     try {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_API_URL}/hashtag/${hashtag}`
-      );
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/hashtag/${hashtag}?page=${timesFetched}&qtd=${qtd}`);
       setPosts(data);
+      setTimesFetched(previous => previous + 1);
     } catch ({ response }) {
       setPosts(response.data.message);
     }
@@ -28,6 +28,19 @@ const HashtagsPage = () => {
     isLoged();
     getPosts();
   }, [hashtag]);
+
+  const [hasMore, setHasmore] = useState(true);
+  const getMorePosts = async () => {
+    try {
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/hashtag/${hashtag}?page=${timesFetched}&qtd=${qtd}`);
+      if (data.message === 'Sem posts com essa hashtag!') return setHasmore(false);
+      setPosts(previous => [...data, ...previous]);
+      setTimesFetched(previous => previous + 1);
+
+    } catch (err) {
+      alert(`An error occured while trying to fetch more ${qtd} posts, please refresh the page`);
+    }
+  };
 
   return (
     <StyledHashtagPosts>
@@ -46,20 +59,27 @@ const HashtagsPage = () => {
           )}
 
           {posts !== null && posts !== 'Hashtag não encontrada!' && (
-            <ul>
-              {posts.map((p) => (
-                <Post
-                  key={p.id}
-                  id={p.id}
-                  postUrl={p.postUrl}
-                  postText={p.postText}
-                  userIdfromPost={p.user.id}
-                  name={p.user.name}
-                  pictureUrl={p.user.pictureUrl}
-                  getData={getPosts}
-                />
-              ))}
-            </ul>
+            <InfiniteScroll
+              dataLength={posts === null ? 0 : posts.length}
+              next={getMorePosts}
+              hasMore={hasMore}
+              loader={<>loading...</>}
+            >
+              <ul>
+                {posts.map((p) => (
+                  <Post
+                    key={p.id}
+                    id={p.id}
+                    postUrl={p.postUrl}
+                    postText={p.postText}
+                    userIdfromPost={p.user.id}
+                    name={p.user.name}
+                    pictureUrl={p.user.pictureUrl}
+                    getData={getPosts}
+                  />
+                ))}
+              </ul>
+            </InfiniteScroll>
           )}
         </StyledDiv>
 
