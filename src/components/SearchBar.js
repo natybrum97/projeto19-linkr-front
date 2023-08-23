@@ -33,7 +33,7 @@ export default function SearchBar() {
     setSearchTerm("");
     setSearchResults([]);
     navigate(`/user/${id}`);
-  }
+  };
 
   return (
     <Container length={searchResults.length} term={searchTerm.length}>

@@ -46,7 +46,6 @@ const HashtagsPage = () => {
       }
     }
   };
-  console.log(timesFetched, hasMore);
 
   return (
     <StyledHashtagPosts>
