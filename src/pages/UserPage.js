@@ -68,10 +68,13 @@ export default function UserPage() {
   const getMorePosts = async () => {
     try {
       const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/user/${id}?page=${timesFetched}&qtd=${qtd}`);
-      if (data.userPosts.userPosts.length === 0) return setHasmore(false);
-      setPosts(previous => ({...previous, userPosts: [...previous.userPosts, ...data.userPosts.userPosts]}));
-      setTimesFetched(previous => previous + 1);
-
+      if (data.userPosts.userPosts.length === 0) {
+        setHasmore(false);
+        setTimesFetched(1);
+      } else {
+        setPosts(previous => ({...previous, userPosts: [...previous.userPosts, ...data.userPosts.userPosts]}));
+        setTimesFetched(previous => previous + 1);
+      }
     } catch (err) {
       alert(`An error occured while trying to fetch more ${qtd} posts, please refresh the page`);
     }

@@ -13,14 +13,15 @@ const qtd = 10;
 const HashtagsPage = () => {
   const { isLoged } = useContext(LoginContext);
 
+  const [hasMore, setHasmore] = useState(true);
   const [timesFetched, setTimesFetched] = useState(1);
   const { hashtag } = useParams();
   const [posts, setPosts] = useState(null);
   const getPosts = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/hashtag/${hashtag}?page=${timesFetched}&qtd=${qtd}`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/hashtag/${hashtag}?page=1&qtd=${qtd}`);
       setPosts(data);
-      setTimesFetched(previous => previous + 1);
+      setHasmore(true);
     } catch ({ response }) {
       setPosts(response.data.message);
     }
@@ -30,19 +31,22 @@ const HashtagsPage = () => {
     getPosts();
   }, [hashtag]);
 
-  const [hasMore, setHasmore] = useState(true);
   const getMorePosts = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/hashtag/${hashtag}?page=${timesFetched}&qtd=${qtd}`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/hashtag/${hashtag}?page=${timesFetched+1}&qtd=${qtd}`);
       setPosts(previous => [...data, ...previous]);
       setTimesFetched(previous => previous + 1);
 
     } catch ({ response }) {
-      if (response.data.message === 'Sem posts com essa hashtag!' || response.data.message === 'Hashtag não encontrada!') return setHasmore(false);
-      alert(`An error occured while trying to fetch more ${qtd} posts, please refresh the page`);
+      if (response.data.message === 'Sem posts com essa hashtag!' || response.data.message === 'Hashtag não encontrada!') {
+        setHasmore(false);
+        setTimesFetched(1);
+      } else {
+        alert(`An error occured while trying to fetch more ${qtd} posts, please refresh the page`);
+      }
     }
   };
-  console.log(posts);
+  console.log(timesFetched, hasMore);
 
   return (
     <StyledHashtagPosts>
