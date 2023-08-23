@@ -13,6 +13,7 @@ const PaginationLoading = () => {
 export default PaginationLoading;
 
 const StyledPagination = styled.div`
+  margin-bottom: 20px;
   align-self: center;
   display: flex;
   align-items: center;

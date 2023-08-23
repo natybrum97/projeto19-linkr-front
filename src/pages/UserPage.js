@@ -161,6 +161,8 @@ const PagesContainer = styled.div`
 `;
 
 const Container = styled.div`
+  margin-bottom: -17px;
+  position: relative;
   @media (min-width: 1200px) {
     width: 526px;
     min-width: unset;
@@ -168,6 +170,9 @@ const Container = styled.div`
   }
   min-width: 100vw;
   div {
+    @media (min-width: 1200px) {
+      min-width: 800px;
+    }
     min-width: 100vw;
     display: flex;
     align-items: center;
@@ -182,10 +187,10 @@ const Container = styled.div`
     button{
       @media (min-width: 1200px) {
         margin-top: unset;
-        margin-left: 400px;
+        position: absolute;
+        right: -328px;
       }
       cursor: pointer;
-      margin-top: 71px;
       width: 112px;
       height: 31px;
       border-radius: 5px;

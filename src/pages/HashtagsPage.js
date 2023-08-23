@@ -54,7 +54,7 @@ const HashtagsPage = () => {
         <SearchBar />
       </SearchBarWrapper>
 
-      <h1 data-test="hashtag-title"># {hashtag}</h1>
+      <H1Wrapper><h1 data-test="hashtag-title"># {hashtag}</h1></H1Wrapper>
 
       <StyledContainer>
         <StyledDiv>
@@ -99,6 +99,27 @@ const HashtagsPage = () => {
 
 export default HashtagsPage;
 
+const H1Wrapper = styled.div`
+  @media (min-width: 1200px) {
+    min-width: 860px;
+  }
+  min-width: 100vw;
+  align-self: center;
+  h1 {
+    @media (min-width: 1200px) {
+      font-size: 43px;
+      line-height: 64px;
+    }
+    text-align: start;
+    margin: 16px;
+    align-self: flex-start;
+    font-family: Oswald;
+    font-size: 33px;
+    font-weight: 700;
+    line-height: 49px;
+    color: #ffffff;
+  }
+`
 const SearchBarWrapper = styled.span`
   width: 100%;
   margin-top: 30px;
@@ -131,22 +152,6 @@ const StyledHashtagPosts = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-
-  h1 {
-    @media (min-width: 1200px) {
-      font-size: 43px;
-      line-height: 64px;
-      align-self: center;
-      margin-left: -670px;
-    }
-    margin: 16px;
-    align-self: flex-start;
-    font-family: Oswald;
-    font-size: 33px;
-    font-weight: 700;
-    line-height: 49px;
-    color: #ffffff;
-  }
   ul {
     margin-top: -10px;
     width: 100%;
