@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineComment, AiOutlineHeart } from "react-icons/ai";
 import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
-import { FaRetweet } from "react-icons/fa";
+import { FaRetweet, FaPaperPlane } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -75,6 +75,7 @@ const Post = ({
   const [usernames, setUsernames] = useState([]);
   const [likeActionDone, setLikeActionDone] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userid");
@@ -264,130 +265,270 @@ const Post = ({
   const handleDeleteCancel = () => {
     setShowDeleteModal(false);
   };
+  const handleCommentsIconClick = () => {
+    setShowComments(!showComments);
+  };
 
   return (
-    <StyledPost data-test="post">
-      {parseInt(userId) === userIdfromPost && (
-        <>
-          <StyledTrash data-test="delete-btn" onClick={handleDeleteClick} />
-          <StyledEdit data-test="edit-btn" onClick={enableEdit} />
-        </>
-      )}
-      {showDeleteModal && (
-        <Modal onClick={() => setShowDeleteModal(false)}>
-          <ModalContent>
-            <p>Are you sure you want to delete this post?</p>
-            <div>
-              <button data-test="cancel" cancel onClick={handleDeleteCancel}>
-                No, go back
-              </button>
-              <button data-test="confirm" onClick={handleDeleteConfirm}>
-                Yes, delete it
-              </button>
-            </div>
-          </ModalContent>
-        </Modal>
-      )}
-      <PostInfo>
-        <div>
-          <img src={pictureUrl} alt="pictureUrl" />
-        </div>
-        <div>
-          {isLiked ? (
-            <StyledFilledHeart
-              data-test="like-btn"
-              pathname={pathname.slice(1, 5)}
-              onClick={handleUnlikeClick}
-              onMouseEnter={() => setShowLikesTooltip(true)}
-              onMouseLeave={() => setShowLikesTooltip(false)}
-            />
+    <>
+      <StyledPost data-test="post">
+        {parseInt(userId) === userIdfromPost && (
+          <>
+            <StyledTrash data-test="delete-btn" onClick={handleDeleteClick} />
+            <StyledEdit data-test="edit-btn" onClick={enableEdit} />
+          </>
+        )}
+        {showDeleteModal && (
+          <Modal onClick={() => setShowDeleteModal(false)}>
+            <ModalContent>
+              <p>Are you sure you want to delete this post?</p>
+              <div>
+                <button data-test="cancel" cancel onClick={handleDeleteCancel}>
+                  No, go back
+                </button>
+                <button data-test="confirm" onClick={handleDeleteConfirm}>
+                  Yes, delete it
+                </button>
+              </div>
+            </ModalContent>
+          </Modal>
+        )}
+        <PostInfo>
+          <div>
+            <img src={pictureUrl} alt="pictureUrl" />
+          </div>
+          <div>
+            {isLiked ? (
+              <StyledFilledHeart
+                data-test="like-btn"
+                pathname={pathname.slice(1, 5)}
+                onClick={handleUnlikeClick}
+                onMouseEnter={() => setShowLikesTooltip(true)}
+                onMouseLeave={() => setShowLikesTooltip(false)}
+              />
+            ) : (
+              <StyledHeart
+                data-test="like-btn"
+                pathname={pathname.slice(1, 5)}
+                onClick={handleLikeClick}
+                onMouseEnter={() => setShowLikesTooltip(true)}
+                onMouseLeave={() => setShowLikesTooltip(false)}
+              />
+            )}
+            {showLikesTooltip && (
+              <LikesTooltip data-test="tooltip">
+                {usernames.length === 0 ? (
+                  <div>Seja o primeiro a curtir isto</div>
+                ) : (
+                  usernames.slice(0, 2).map((username, index) => (
+                    <div key={index}>
+                      {index === 0 && username === nick ? "Você" : username}
+                      {index === 0 && usernames.length === 1 ? " curtiu" : ""}
+                      {index === 0 && usernames.length > 1 ? "," : ""}
+                      {index === 1 && usernames.length === 2 ? " curtiu" : ""}
+                    </div>
+                  ))
+                )}
+                {usernames.length > 2
+                  ? ` e mais ${usernames.length - 2} pessoa${
+                      usernames.length - 2 > 1 ? "s" : ""
+                    } `
+                  : ""}
+              </LikesTooltip>
+            )}
+          </div>
+          <StyledP data-test="counter">{likeCount} likes</StyledP>
+
+          <StyledComment onClick={handleCommentsIconClick} />
+          <StyledP>{`${0}\n comments`}</StyledP>
+
+          <StyledRepost />
+          <StyledP>{`${0}\n re-posts`}</StyledP>
+        </PostInfo>
+
+        <PostText>
+          <h2 data-test="username">
+            <Link to={`/user/${userIdfromPost}`}>{name}</Link>
+          </h2>
+          {!openEditPost ? (
+            <p data-test="description">{renderBoldHashtags}</p>
           ) : (
-            <StyledHeart
-              data-test="like-btn"
-              pathname={pathname.slice(1, 5)}
-              onClick={handleLikeClick}
-              onMouseEnter={() => setShowLikesTooltip(true)}
-              onMouseLeave={() => setShowLikesTooltip(false)}
-            />
+            <form
+              onSubmit={(e) => {
+                editPost(e);
+              }}
+            >
+              <input
+                data-test="edit-input"
+                onChange={(e) => setEditedPostText(e.target.value)}
+                value={editedPostText}
+                disabled={loading}
+                type="text"
+                ref={editPostRef}
+                tabIndex={0}
+              ></input>
+            </form>
           )}
-          {showLikesTooltip && (
-            <LikesTooltip data-test="tooltip">
-              {usernames.length === 0 ? (
-                <div>Seja o primeiro a curtir isto</div>
-              ) : (
-                usernames.slice(0, 2).map((username, index) => (
-                  <div key={index}>
-                    {index === 0 && username === nick ? "Você" : username}
-                    {index === 0 && usernames.length === 1 ? " curtiu" : ""}
-                    {index === 0 && usernames.length > 1 ? "," : ""}
-                    {index === 1 && usernames.length === 2 ? " curtiu" : ""}
-                  </div>
-                ))
-              )}
-              {usernames.length > 2
-                ? ` e mais ${usernames.length - 2} pessoa${
-                    usernames.length - 2 > 1 ? "s" : ""
-                  } `
-                : ""}
-            </LikesTooltip>
-          )}
-        </div>
-        <StyledP data-test="counter">{likeCount} likes</StyledP>
+        </PostText>
+        <Snippet
+          to={postUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-test="link"
+        >
+          <div>
+            <h1>{urlMetaData.title}</h1>
+            <h2>{urlMetaData.description}</h2>
+            <h3>{postUrl}</h3>
+          </div>
+          <div>
+            {urlMetaData.image && (
+              <img src={urlMetaData.image} alt="urlMetaDataImage" />
+            )}
+          </div>
+        </Snippet>
+      </StyledPost>
+      {showComments && (
+        <CommentsSection>
+          <Space></Space>
+          <Comment>
+            <UserAvatar src={localStorage.getItem("url")} alt="User Avatar" />
+            <UserInfo>
+              <UserNameContainer>
+                <UserName>Kaio</UserName>
+                <FollowButton>Fallow</FollowButton>
+              </UserNameContainer>
+              <TextComment>OINNN</TextComment>
+            </UserInfo>
+          </Comment>
+          <HorizontalLine></HorizontalLine>
+          <Comment>
+            <UserAvatar src={localStorage.getItem("url")} alt="User Avatar" />
+            <UserInfo>
+              <UserNameContainer>
+                <UserName>Kaio</UserName>
+                <FollowButton>Fallow</FollowButton>
+              </UserNameContainer>
+              <TextComment>OINNN</TextComment>
+            </UserInfo>
+          </Comment>
 
-        <StyledComment />
-        <StyledP>{`${0}\n comments`}</StyledP>
+          <HorizontalLine></HorizontalLine>
 
-        <StyledRepost />
-        <StyledP>{`${0}\n re-posts`}</StyledP>
-
-      </PostInfo>
-
-      <PostText>
-        <h2 data-test="username">
-          <Link to={`/user/${userIdfromPost}`}>{name}</Link>
-        </h2>
-        {!openEditPost ? (
-          <p data-test="description">{renderBoldHashtags}</p>
-        ) : (
-          <form
-            onSubmit={(e) => {
-              editPost(e);
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "5px",
             }}
           >
-            <input
-              data-test="edit-input"
-              onChange={(e) => setEditedPostText(e.target.value)}
-              value={editedPostText}
-              disabled={loading}
-              type="text"
-              ref={editPostRef}
-              tabIndex={0}
-            ></input>
-          </form>
-        )}
-      </PostText>
-      <Snippet
-        to={postUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        data-test="link"
-      >
-        <div>
-          <h1>{urlMetaData.title}</h1>
-          <h2>{urlMetaData.description}</h2>
-          <h3>{postUrl}</h3>
-        </div>
-        <div>
-          {urlMetaData.image && (
-            <img src={urlMetaData.image} alt="urlMetaDataImage" />
-          )}
-        </div>
-      </Snippet>
-    </StyledPost>
+            <UserAvatar src={localStorage.getItem("url")} alt="User Avatar" />
+            <CommentInputContainer>
+              <CommentInput type="text" placeholder="Write a comment..." />
+              <SendButton />
+            </CommentInputContainer>
+          </div>
+        </CommentsSection>
+      )}
+    </>
   );
 };
 
 export default Post;
+const Comment = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+const UserAvatar = styled.img`
+  width: 39px;
+  height: 39px;
+  border-radius: 50%;
+  margin-right: 10px;
+`;
+
+const UserInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const UserNameContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const UserName = styled.h2`
+  margin-right: 10px;
+  color: #f3f3f3;
+  font-size: 14px;
+`;
+
+const FollowButton = styled.h2`
+  color: #565656;
+`;
+
+const TextComment = styled.p`
+  margin-top: 5px;
+  color: #acacac;
+  font-size: 14px;
+`;
+
+const HorizontalLine = styled.hr`
+  width: 462.001px;
+  height: 1px;
+  background: #353535;
+  border: none;
+  margin: 10px 0;
+`;
+
+const CommentInputContainer = styled.div`
+  display: flex;
+  align-items: center;
+  background-color: #252525;
+  border-radius: 8px;
+  height: 39px;
+  width: 100%;
+
+  margin-top: 10px;
+`;
+
+const CommentInput = styled.input`
+  flex-grow: 1;
+  height: 36px;
+  border: none;
+  background-color: transparent;
+  color: #fff;
+  padding: 6px 0;
+  padding-left: 15px;
+  font-size: 14px;
+  margin-right: 8px;
+  position: relative;
+  &:focus {
+    outline: none;
+  }
+`;
+
+const SendButton = styled(FaPaperPlane)`
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+  margin-right: 10px;
+`;
+
+const CommentsSection = styled.div`
+  position: relative;
+  padding: 10px;
+  border-radius: 8px;
+  height: 100%;
+  width: 96%;
+  top: -28px;
+  border-radius: 16px;
+  background: #1e1e1e;
+`;
+const Space = styled.div`
+  margin-top: 50px;
+`;
 
 const Modal = styled.div`
   cursor: pointer;
@@ -605,6 +746,7 @@ const StyledPost = styled.li`
     min-width: 500px;
     border-radius: 10px;
     height: 276px;
+    z-index: 1000;
   }
   position: relative;
   margin-top: 13px;
@@ -640,7 +782,7 @@ const PostInfo = styled.div`
     line-height: 11px;
     color: #ffffff;
   }
-  p:nth-child(5){
+  p:nth-child(5) {
     margin-top: -4px;
   }
 `;
