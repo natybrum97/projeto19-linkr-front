@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import Post from "../components/Post";
@@ -7,6 +8,7 @@ import SearchBar from "../components/SearchBar";
 import Trending from "../components/Trending";
 import { LoginContext } from "../contexts/LoginContext";
 import api from "../services/api";
+const qtd = 10;
 
 export default function UserPage() {
   const authToken = localStorage.getItem("token");
@@ -15,10 +17,10 @@ export default function UserPage() {
 
   const { isLoged } = useContext(LoginContext);
 
+  const [timesFetched, setTimesFetched] = useState(1);
   const [posts, setPosts] = useState(null);
-
   function LoadPosts() {
-    const promise = api.getUserPost(authToken, id);
+    const promise = api.getUserPost(authToken, id, timesFetched, qtd);
 
     promise
       .then((response) => setPosts(response.data.userPosts))
@@ -59,7 +61,20 @@ export default function UserPage() {
       alert('não foi possível executar a operação');
       setLoading(false);
     }
-  }
+  };
+
+  const [hasMore, setHasmore] = useState(true);
+  const getMorePosts = async () => {
+    try {
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/user/${id}?page=${timesFetched}&qtd=${qtd}`);
+      if (data.userPosts.userPosts.length === 0) return setHasmore(false);
+      setPosts(previous => ({...previous, userPosts: [...previous.userPosts, ...data.userPosts.userPosts]}));
+      setTimesFetched(previous => previous + 1);
+
+    } catch (err) {
+      alert(`An error occured while trying to fetch more ${qtd} posts, please refresh the page`);
+    }
+  };
 
   useEffect(() => {
     if (notSameUser) getFollows();
@@ -101,20 +116,27 @@ export default function UserPage() {
       <StyledContainer>
         {posts !== null && posts !== undefined && posts.userPosts.length > 0 ? (
           <>
-            <ul>
-              {posts.userPosts.map((p) => (
-                <Post
-                  key={p.id}
-                  id={p.id}
-                  postUrl={p.postUrl}
-                  postText={p.postText}
-                  userIdfromPost={posts.user.id}
-                  name={posts.user.name}
-                  pictureUrl={posts.user.pictureUrl}
-                  getData={LoadPosts}
-                />
-              ))}
-            </ul>
+            <InfiniteScroll
+              dataLength={posts === null ? 0 : posts.userPosts.length}
+              next={getMorePosts}
+              hasMore={hasMore}
+              loader={<>loading...</>}
+            >
+              <ul>
+                {posts.userPosts.map((p) => (
+                  <Post
+                    key={p.id}
+                    id={p.id}
+                    postUrl={p.postUrl}
+                    postText={p.postText}
+                    userIdfromPost={posts.user.id}
+                    name={posts.user.name}
+                    pictureUrl={posts.user.pictureUrl}
+                    getData={LoadPosts}
+                  />
+                ))}
+              </ul>
+            </InfiniteScroll>
             <Trending />
           </>
         ) : (

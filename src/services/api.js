@@ -6,10 +6,10 @@ function createConfig(token) {
   return { headers: { Authorization: `Bearer ${token}` } };
 }
 
-function getUserPost(token, id) {
+function getUserPost(token, id, timesFetched, qtd) {
   const config = createConfig(token, id);
 
-  const promise = axios.get(`${BASE_URL}/user/${id}`, config);
+  const promise = axios.get(`${BASE_URL}/user/${id}?page=${timesFetched}&qtd=${qtd}`, config);
 
   return promise;
 }
