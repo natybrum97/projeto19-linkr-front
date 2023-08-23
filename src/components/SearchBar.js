@@ -116,6 +116,10 @@ const Container = styled.form`
   }
 
   ul {
+    @media (min-width: 1200px) {
+      margin-top: unset;
+    }
+    margin-top: 1px;
     width: 100%;
     list-style: none;
     padding: 10px;
@@ -135,6 +139,7 @@ const Container = styled.form`
 
     :hover {
       cursor: pointer;
+      transition: 700ms;
       background: #ffffff;
     }
 
