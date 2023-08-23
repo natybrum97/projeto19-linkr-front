@@ -1,34 +1,36 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { IoReloadOutline } from "react-icons/io5";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { styled } from "styled-components";
 import { useInterval } from 'usehooks-ts';
 import Post from "../components/Post";
 import SearchBar from "../components/SearchBar";
 import Trending from "../components/Trending";
 import { LoginContext } from "../contexts/LoginContext";
+const qtd = 10;
 
 const TimeLinePage = () => {
 
   const { isLoged } = useContext(LoginContext);
 
+  const [timesFetched, setTimesFetched] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [postInput, setPostInput] = useState({
     postUrl: "",
     postText: "",
   });
-  const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState(null);
   const getPosts = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post`);
-
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post?page=${timesFetched}&qtd=${qtd}`);
       setPosts(data);
+      setTimesFetched(previous => previous + 1);
+      
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
     } catch (err) {
-      alert(
-        "An error occured while trying to fetch the posts, please refresh the page"
-      );
+      alert("An error occured while trying to fetch the posts, please refresh the page");
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
     }
@@ -52,6 +54,19 @@ const TimeLinePage = () => {
   const mergeNewPosts = () => {
     setPosts([...newPosts, ...posts]);
     setNewPosts([]);
+  };
+
+  const [hasMore, setHasmore] = useState(true);
+  const getMorePosts = async () => {
+    try {
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post?page=${timesFetched}&qtd=${qtd}`);
+      setPosts(previous => [...data, ...previous]);
+      setTimesFetched(previous => previous + 1);
+      if (data.length === 0) setHasmore(false);
+
+    } catch (err) {
+      alert(`An error occured while trying to fetch more ${qtd} posts, please refresh the page`);
+    }
   };
 
   const submitPost = async (e) => {
@@ -141,20 +156,27 @@ const TimeLinePage = () => {
 
           {hasPosts 
             && (
-              <ul>
-                {posts.map((p) => (
-                  <Post
-                    key={p.id}
-                    id={p.id}
-                    postUrl={p.postUrl}
-                    postText={p.postText}
-                    userIdfromPost={p.user.id}
-                    name={p.user.name}
-                    pictureUrl={p.user.pictureUrl}
-                    getData={getPosts}
-                  />
-                ))}
-              </ul>
+              <InfiniteScroll
+                dataLength={posts === null ? 0 : posts.length}
+                next={getMorePosts}
+                hasMore={hasMore}
+                loader={<>loading...</>}
+              >
+                <ul>
+                  {posts.map((p) => (
+                    <Post
+                      key={p.id}
+                      id={p.id}
+                      postUrl={p.postUrl}
+                      postText={p.postText}
+                      userIdfromPost={p.user.id}
+                      name={p.user.name}
+                      pictureUrl={p.user.pictureUrl}
+                      getData={getPosts}
+                    />
+                  ))}
+                </ul>
+              </InfiniteScroll>
           )}
         </StyledLeftTimeline>
 
