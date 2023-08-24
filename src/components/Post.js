@@ -77,6 +77,9 @@ const Post = ({
   const [likeActionDone, setLikeActionDone] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+  const [followerIds, setFollowerIds] = useState([]);
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userid");
@@ -270,6 +273,65 @@ const Post = ({
     setShowComments(!showComments);
   };
 
+  useEffect(() => {
+    fetchComments(); // Fetch comments when the component mounts
+  }, [postId]);
+
+  const fetchComments = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/comment/${postId}`
+      );
+      setComments(response.data);
+
+      // Print comments to the console
+      console.log("Comments for Post", postId);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+
+  const submitComment = async () => {
+    try {
+      const commentData = {
+        user_id: userId,
+        post_id: postId,
+        content: newComment,
+      };
+
+      await axios.post(`${process.env.REACT_APP_API_URL}/comment`, commentData);
+
+      // Clear the input and fetch updated comments
+      setNewComment("");
+      fetchComments();
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+    }
+  };
+
+  useEffect(() => {
+    // Resto do seu código permanece o mesmo
+
+    const fetchFollowers = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/followedByMe`
+        );
+        const followerData = response.data;
+        const followerIds = followerData.map((follower) => follower.idFollowed);
+        setFollowerIds(followerIds);
+        console.log("Follower Data:", followerData);
+      } catch (error) {
+        console.error("Erro ao obter seguidores:", error);
+      }
+    };
+
+    // Resto do seu código permanece o mesmo
+
+    fetchFollowers();
+  }, []);
+
   const [showShareModal, setShowShareModal] = useState(false);
   const handleShareClick = () => setShowShareModal(true);
   const handleShareCancel = () => setShowShareModal(false);
@@ -386,7 +448,7 @@ const Post = ({
           <StyledP data-test="counter">{likeCount} likes</StyledP>
 
           <StyledComment onClick={handleCommentsIconClick} />
-          <StyledP>{`${0}\n comments`}</StyledP>
+          <StyledP>{`${comments.length}\n comments`}</StyledP>
 
           <StyledRepost onClick={handleShareClick}/>
           <StyledP>{`${repostCount}\n re-posts`}</StyledP>
@@ -438,29 +500,41 @@ const Post = ({
       {showComments && (
         <CommentsSection>
           <Space></Space>
-          <Comment>
-            <UserAvatar src={localStorage.getItem("url")} alt="User Avatar" />
-            <UserInfo>
-              <UserNameContainer>
-                <UserName>Kaio</UserName>
-                <FollowButton>Fallow</FollowButton>
-              </UserNameContainer>
-              <TextComment>OINNN</TextComment>
-            </UserInfo>
-          </Comment>
-          <HorizontalLine></HorizontalLine>
-          <Comment>
-            <UserAvatar src={localStorage.getItem("url")} alt="User Avatar" />
-            <UserInfo>
-              <UserNameContainer>
-                <UserName>Kaio</UserName>
-                <FollowButton>Fallow</FollowButton>
-              </UserNameContainer>
-              <TextComment>OINNN</TextComment>
-            </UserInfo>
-          </Comment>
+          <div>
+            {comments &&
+              comments.map((comment, index) => {
+                const isFollowing = followerIds.includes(comment.user_id);
 
-          <HorizontalLine></HorizontalLine>
+                return (
+                  <div key={comment.id}>
+                    <Comment>
+                      {/* Exibe a foto de perfil do usuário que fez o comentário */}
+                      <UserAvatar src={comment.pictureUrl} alt="User Avatar" />
+                      <UserInfo>
+                        <UserNameContainer>
+                          {/* Exibe o nome do usuário que fez o comentário */}
+                          <UserName>{comment.username}</UserName>
+                          {/* Verifica se o autor do comentário é o autor do post original */}
+                          {comment.user_id === userIdfromPost && (
+                            <FollowButton>• post’s author</FollowButton>
+                          )}
+                          {isFollowing && (
+                            <FollowButton>• following</FollowButton>
+                          )}
+                          {!isFollowing &&
+                            comment.user_id !== userIdfromPost && (
+                              <FollowButton>• follow</FollowButton>
+                            )}
+                        </UserNameContainer>
+                        {/* Exibe o comentário do usuário */}
+                        <TextComment>{comment.content}</TextComment>
+                      </UserInfo>
+                    </Comment>
+                    <HorizontalLine></HorizontalLine>
+                  </div>
+                );
+              })}
+          </div>
 
           <div
             style={{
@@ -471,8 +545,14 @@ const Post = ({
           >
             <UserAvatar src={localStorage.getItem("url")} alt="User Avatar" />
             <CommentInputContainer>
-              <CommentInput type="text" placeholder="Write a comment..." />
-              <SendButton />
+              <CommentInput
+                type="text"
+                placeholder="Write a comment..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+              />
+              <SendButton onClick={submitComment} />{" "}
+              {/* Attach submitComment function */}
             </CommentInputContainer>
           </div>
         </CommentsSection>
