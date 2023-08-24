@@ -78,6 +78,7 @@ const Post = ({
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const [followerIds, setFollowerIds] = useState([]);
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userid");
@@ -308,6 +309,28 @@ const Post = ({
     }
   };
 
+  useEffect(() => {
+    // Resto do seu código permanece o mesmo
+
+    const fetchFollowers = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/followedByMe`
+        );
+        const followerData = response.data;
+        const followerIds = followerData.map((follower) => follower.idFollowed);
+        setFollowerIds(followerIds);
+        console.log("Follower Data:", followerData);
+      } catch (error) {
+        console.error("Erro ao obter seguidores:", error);
+      }
+    };
+
+    // Resto do seu código permanece o mesmo
+
+    fetchFollowers();
+  }, []);
+
   return (
     <>
       <StyledPost data-test="post">
@@ -430,27 +453,41 @@ const Post = ({
       {showComments && (
         <CommentsSection>
           <Space></Space>
-          {comments &&
-            comments.map((comment, index) => (
-              <div key={comment.id}>
-                <Comment>
-                  <UserAvatar src={comment.pictureUrl} alt="User Avatar" />
-                  <UserInfo>
-                    <UserNameContainer>
-                      <UserName>{comment.username}</UserName>
+          <div>
+            {comments &&
+              comments.map((comment, index) => {
+                const isFollowing = followerIds.includes(comment.user_id);
 
-                      {comment.user_id === userIdfromPost ? (
-                        <FollowButton>Author</FollowButton>
-                      ) : (
-                        <FollowButton>Follow</FollowButton>
-                      )}
-                    </UserNameContainer>
-                    <TextComment>{comment.content}</TextComment>
-                  </UserInfo>
-                </Comment>
-                {index !== comments.length - 1 && <HorizontalLine />}
-              </div>
-            ))}
+                return (
+                  <div key={comment.id}>
+                    <Comment>
+                      {/* Exibe a foto de perfil do usuário que fez o comentário */}
+                      <UserAvatar src={comment.pictureUrl} alt="User Avatar" />
+                      <UserInfo>
+                        <UserNameContainer>
+                          {/* Exibe o nome do usuário que fez o comentário */}
+                          <UserName>{comment.username}</UserName>
+                          {/* Verifica se o autor do comentário é o autor do post original */}
+                          {comment.user_id === userIdfromPost && (
+                            <FollowButton>• post’s author</FollowButton>
+                          )}
+                          {isFollowing && (
+                            <FollowButton>• following</FollowButton>
+                          )}
+                          {!isFollowing &&
+                            comment.user_id !== userIdfromPost && (
+                              <FollowButton>• follow</FollowButton>
+                            )}
+                        </UserNameContainer>
+                        {/* Exibe o comentário do usuário */}
+                        <TextComment>{comment.content}</TextComment>
+                      </UserInfo>
+                    </Comment>
+                    <HorizontalLine></HorizontalLine>
+                  </div>
+                );
+              })}
+          </div>
 
           <div
             style={{
@@ -465,7 +502,7 @@ const Post = ({
                 type="text"
                 placeholder="Write a comment..."
                 value={newComment}
-                onChange={(e) => setNewComment(e.target.value)} // Update new comment state
+                onChange={(e) => setNewComment(e.target.value)}
               />
               <SendButton onClick={submitComment} />{" "}
               {/* Attach submitComment function */}
