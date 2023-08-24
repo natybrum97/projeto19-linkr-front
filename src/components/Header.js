@@ -38,7 +38,7 @@ export default function Header() {
 }
 
 const PageContainerTopo = styled.div`
-    z-index: 2;
+    z-index: 9999;
     display: flex;
     justify-content:space-between;
     align-items: center;
