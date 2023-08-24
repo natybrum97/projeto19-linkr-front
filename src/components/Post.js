@@ -76,6 +76,8 @@ const Post = ({
   const [likeActionDone, setLikeActionDone] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userid");
@@ -269,6 +271,43 @@ const Post = ({
     setShowComments(!showComments);
   };
 
+  useEffect(() => {
+    fetchComments(); // Fetch comments when the component mounts
+  }, [postId]);
+
+  const fetchComments = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/comment/${postId}`
+      );
+      setComments(response.data);
+
+      // Print comments to the console
+      console.log("Comments for Post", postId);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+
+  const submitComment = async () => {
+    try {
+      const commentData = {
+        user_id: userId,
+        post_id: postId,
+        content: newComment,
+      };
+
+      await axios.post(`${process.env.REACT_APP_API_URL}/comment`, commentData);
+
+      // Clear the input and fetch updated comments
+      setNewComment("");
+      fetchComments();
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+    }
+  };
+
   return (
     <>
       <StyledPost data-test="post">
@@ -340,7 +379,7 @@ const Post = ({
           <StyledP data-test="counter">{likeCount} likes</StyledP>
 
           <StyledComment onClick={handleCommentsIconClick} />
-          <StyledP>{`${0}\n comments`}</StyledP>
+          <StyledP>{`${comments.length}\n comments`}</StyledP>
 
           <StyledRepost />
           <StyledP>{`${0}\n re-posts`}</StyledP>
@@ -391,29 +430,27 @@ const Post = ({
       {showComments && (
         <CommentsSection>
           <Space></Space>
-          <Comment>
-            <UserAvatar src={localStorage.getItem("url")} alt="User Avatar" />
-            <UserInfo>
-              <UserNameContainer>
-                <UserName>Kaio</UserName>
-                <FollowButton>Fallow</FollowButton>
-              </UserNameContainer>
-              <TextComment>OINNN</TextComment>
-            </UserInfo>
-          </Comment>
-          <HorizontalLine></HorizontalLine>
-          <Comment>
-            <UserAvatar src={localStorage.getItem("url")} alt="User Avatar" />
-            <UserInfo>
-              <UserNameContainer>
-                <UserName>Kaio</UserName>
-                <FollowButton>Fallow</FollowButton>
-              </UserNameContainer>
-              <TextComment>OINNN</TextComment>
-            </UserInfo>
-          </Comment>
+          {comments &&
+            comments.map((comment, index) => (
+              <div key={comment.id}>
+                <Comment>
+                  <UserAvatar src={comment.pictureUrl} alt="User Avatar" />
+                  <UserInfo>
+                    <UserNameContainer>
+                      <UserName>{comment.username}</UserName>
 
-          <HorizontalLine></HorizontalLine>
+                      {comment.user_id === userIdfromPost ? (
+                        <FollowButton>Author</FollowButton>
+                      ) : (
+                        <FollowButton>Follow</FollowButton>
+                      )}
+                    </UserNameContainer>
+                    <TextComment>{comment.content}</TextComment>
+                  </UserInfo>
+                </Comment>
+                {index !== comments.length - 1 && <HorizontalLine />}
+              </div>
+            ))}
 
           <div
             style={{
@@ -424,8 +461,14 @@ const Post = ({
           >
             <UserAvatar src={localStorage.getItem("url")} alt="User Avatar" />
             <CommentInputContainer>
-              <CommentInput type="text" placeholder="Write a comment..." />
-              <SendButton />
+              <CommentInput
+                type="text"
+                placeholder="Write a comment..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)} // Update new comment state
+              />
+              <SendButton onClick={submitComment} />{" "}
+              {/* Attach submitComment function */}
             </CommentInputContainer>
           </div>
         </CommentsSection>
