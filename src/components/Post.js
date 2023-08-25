@@ -15,7 +15,8 @@ const Post = ({
   name,
   pictureUrl,
   getData,
-  repostCount
+  repostCount,
+  repostedBy
 }) => {
   const { pathname } = useLocation();
 
@@ -357,10 +358,10 @@ const Post = ({
 
   return (
     <>
-      {repostCount > 0 && (
+      {repostedBy !== null && (
         <ShareHeader>
           <FaRetweet size={22} color="white" style={{ marginLeft: '10px' }}/>
-          <p>Re-posted by <strong>you</strong></p>
+          <p>Re-posted by <strong>{repostedBy === name ? "you" : repostedBy}</strong></p>
         </ShareHeader>
       )}
 

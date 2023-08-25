@@ -167,9 +167,9 @@ const TimeLinePage = () => {
                 loader={<PaginationLoading/>}
               >
                 <ul>
-                  {posts.map((p) => (
+                  {posts.map((p, i) => (
                     <Post
-                      key={p.id}
+                      key={i}
                       id={p.id}
                       postUrl={p.postUrl}
                       postText={p.postText}
@@ -178,6 +178,7 @@ const TimeLinePage = () => {
                       pictureUrl={p.user.pictureUrl}
                       getData={getPosts}
                       repostCount={p.repostcount}
+                      repostedBy={p.repostedBy}
                     />
                   ))}
                 </ul>
