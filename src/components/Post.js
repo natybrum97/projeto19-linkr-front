@@ -357,10 +357,12 @@ const Post = ({
 
   return (
     <>
-      <ShareHeader>
-        <FaRetweet size={22} color="white" style={{ marginLeft: '10px' }}/>
-        <p>Re-posted by <strong>you</strong></p>
-      </ShareHeader>
+      {repostCount > 0 && (
+        <ShareHeader>
+          <FaRetweet size={22} color="white" style={{ marginLeft: '10px' }}/>
+          <p>Re-posted by <strong>you</strong></p>
+        </ShareHeader>
+      )}
 
       <StyledPost data-test="post">
         {parseInt(userId) === userIdfromPost && (
@@ -369,7 +371,6 @@ const Post = ({
             <StyledEdit data-test="edit-btn" onClick={enableEdit} />
           </>
         )}
-
         {showShareModal && (
           <Modal onClick={() => setShowShareModal(false)}>
             <ModalContent>
@@ -882,7 +883,7 @@ const StyledPost = styled.li`
   height: 220px;
   background-color: #171717;
   display: flex;
-  margin-top: 15px;
+  margin-top: 25px;
 `;
 
 const PostInfo = styled.div`
