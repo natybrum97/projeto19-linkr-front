@@ -137,7 +137,7 @@ export default function UserPage() {
                     name={posts.user.name}
                     pictureUrl={posts.user.pictureUrl}
                     getData={LoadPosts}
-                    repostCount={p.repostcount}
+                    repostCount={p.repostCount}
                   />
                 ))}
               </ul>
