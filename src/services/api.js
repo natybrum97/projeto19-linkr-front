@@ -9,7 +9,7 @@ function createConfig(token) {
 function getUserPost(token, id, timesFetched, qtd) {
   const config = createConfig(token, id);
 
-  const promise = axios.get(`${BASE_URL}/user/${id}?page=${timesFetched}&qtd=${qtd}`, config);
+  const promise = axios.get(`${BASE_URL}/user/${id}?page=${1}&qtd=${qtd}`, config);
 
   return promise;
 }
