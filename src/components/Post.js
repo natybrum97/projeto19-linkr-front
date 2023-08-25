@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineComment, AiOutlineHeart } from "react-icons/ai";
 import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
-import { FaRetweet, FaPaperPlane } from "react-icons/fa";
+import { FaPaperPlane, FaRetweet } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -220,7 +220,7 @@ const Post = ({
       setOpenEditPost(false);
       setLoading(false);
       setIfEdited((previous) => previous + 1);
-      getData();
+      getData(false);
     } catch (err) {
       alert("não foi possível salvar as alterações");
       setLoading(false);
@@ -258,7 +258,7 @@ const Post = ({
       // Fechar o modal após a exclusão
       setShowDeleteModal(false);
 
-      getData();
+      getData(false);
     } catch (error) {
       alert("Não foi possivel deletar o post ");
       setShowDeleteModal(false);
@@ -286,8 +286,8 @@ const Post = ({
       setComments(response.data);
 
       // Print comments to the console
-      console.log("Comments for Post", postId);
-      console.log(response.data);
+      /* console.log("Comments for Post", postId);
+      console.log(response.data); */
     } catch (error) {
       console.error("Error fetching comments:", error);
     }
@@ -322,7 +322,7 @@ const Post = ({
         const followerData = response.data;
         const followerIds = followerData.map((follower) => follower.idFollowed);
         setFollowerIds(followerIds);
-        console.log("Follower Data:", followerData);
+        /* console.log("Follower Data:", followerData); */
       } catch (error) {
         console.error("Erro ao obter seguidores:", error);
       }
@@ -347,7 +347,7 @@ const Post = ({
         },
       });
       setShowShareModal(false);
-      getData();
+      getData(false);
     } catch (error) {
       alert("Não foi possível compartilhar o post ");
       setShowShareModal(false);
@@ -358,15 +358,15 @@ const Post = ({
 
   return (
     <>
-      {repostedBy !== null && (
+      {repostedBy && (
         <ShareHeader>
           <FaRetweet size={22} color="white" style={{ marginLeft: '10px' }}/>
-          <p>Re-posted by <strong>{repostedBy === name ? "you" : repostedBy}</strong></p>
+          <p>Re-posted by <strong>{repostedBy === localStorage.getItem("user") ? 'you' : repostedBy}</strong></p>
         </ShareHeader>
       )}
 
       <StyledPost data-test="post">
-        {parseInt(userId) === userIdfromPost && (
+        {((repostedBy === localStorage.getItem("user")) || (parseInt(userId) === userIdfromPost)) && (
           <>
             <StyledTrash data-test="delete-btn" onClick={handleDeleteClick} />
             <StyledEdit data-test="edit-btn" onClick={enableEdit} />

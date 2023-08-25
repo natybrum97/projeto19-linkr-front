@@ -17,10 +17,12 @@ const HashtagsPage = () => {
   const [timesFetched, setTimesFetched] = useState(1);
   const { hashtag } = useParams();
   const [posts, setPosts] = useState(null);
-  const getPosts = async () => {
+  const getPosts = async (getData) => {
     try {
       const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/hashtag/${hashtag}?page=${1}&qtd=${qtd}`);
-      setTimesFetched(previous => previous + 1);
+      if (getData){
+        setTimesFetched(previous => previous + 1);
+      };
       setPosts(data);
       setHasmore(true);
     } catch ({ response }) {
@@ -29,7 +31,7 @@ const HashtagsPage = () => {
   };
   useEffect(() => {
     isLoged();
-    getPosts();
+    getPosts(true);
   }, [hashtag]);
 
   const getMorePosts = async () => {

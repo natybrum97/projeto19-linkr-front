@@ -20,8 +20,11 @@ export default function UserPage() {
 
   const [timesFetched, setTimesFetched] = useState(1);
   const [posts, setPosts] = useState(null);
-  function LoadPosts() {
+  function LoadPosts(getData) {
     const promise = api.getUserPost(authToken, id, timesFetched, qtd);
+    if (getData){
+      setTimesFetched(previous => previous + 1);
+    }
 
     promise
       .then((response) => setPosts(response.data.userPosts))
@@ -83,7 +86,7 @@ export default function UserPage() {
   useEffect(() => {
     if (notSameUser) getFollows();
     isLoged();
-    LoadPosts(authToken, id);
+    LoadPosts(true);
   }, [id]);
 
   return (
