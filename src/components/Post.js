@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineComment, AiOutlineHeart } from "react-icons/ai";
 import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
-import { FaRetweet, FaPaperPlane } from "react-icons/fa";
+import { FaPaperPlane, FaRetweet } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { styled } from "styled-components";
 
@@ -15,7 +15,8 @@ const Post = ({
   name,
   pictureUrl,
   getData,
-  repostCount
+  repostCount,
+  repostedBy
 }) => {
   const { pathname } = useLocation();
 
@@ -285,8 +286,8 @@ const Post = ({
       setComments(response.data);
 
       // Print comments to the console
-      console.log("Comments for Post", postId);
-      console.log(response.data);
+      /* console.log("Comments for Post", postId);
+      console.log(response.data); */
     } catch (error) {
       console.error("Error fetching comments:", error);
     }
@@ -321,7 +322,7 @@ const Post = ({
         const followerData = response.data;
         const followerIds = followerData.map((follower) => follower.idFollowed);
         setFollowerIds(followerIds);
-        console.log("Follower Data:", followerData);
+        /* console.log("Follower Data:", followerData); */
       } catch (error) {
         console.error("Erro ao obter seguidores:", error);
       }
@@ -357,15 +358,15 @@ const Post = ({
 
   return (
     <>
-      {repostCount > 0 && (
+      {repostedBy && (
         <ShareHeader>
           <FaRetweet size={22} color="white" style={{ marginLeft: '10px' }}/>
-          <p>Re-posted by <strong>you</strong></p>
+          <p>Re-posted by <strong>{repostedBy === localStorage.getItem("user") ? 'you' : repostedBy}</strong></p>
         </ShareHeader>
       )}
 
       <StyledPost data-test="post">
-        {parseInt(userId) === userIdfromPost && (
+        {((repostedBy === localStorage.getItem("user")) || (parseInt(userId) === userIdfromPost)) && (
           <>
             <StyledTrash data-test="delete-btn" onClick={handleDeleteClick} />
             <StyledEdit data-test="edit-btn" onClick={enableEdit} />
