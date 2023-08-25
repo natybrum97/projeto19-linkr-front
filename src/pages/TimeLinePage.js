@@ -177,6 +177,7 @@ const TimeLinePage = () => {
                       name={p.user.name}
                       pictureUrl={p.user.pictureUrl}
                       getData={getPosts}
+                      repostCount={p.repostcount}
                     />
                   ))}
                 </ul>

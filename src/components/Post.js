@@ -15,6 +15,7 @@ const Post = ({
   name,
   pictureUrl,
   getData,
+  repostCount
 }) => {
   const { pathname } = useLocation();
 
@@ -331,8 +332,36 @@ const Post = ({
     fetchFollowers();
   }, []);
 
+  const [showShareModal, setShowShareModal] = useState(false);
+  const handleShareClick = () => setShowShareModal(true);
+  const handleShareCancel = () => setShowShareModal(false);
+  
+  const handleShareConfirm = async () => {
+    const repost = { idUserRepost: userId, idUserOriginalPost: userIdfromPost, idOriginalPost: id };
+
+    try {
+      await axios.post(`${process.env.REACT_APP_API_URL}/post/share`, repost,  {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setShowShareModal(false);
+      getData();
+    } catch (error) {
+      alert("Não foi possível compartilhar o post ");
+      setShowShareModal(false);
+      
+      console.error("Erro ao compartilhar o post:", error);
+    }
+  };
+
   return (
     <>
+      <ShareHeader>
+        <FaRetweet size={22} color="white" style={{ marginLeft: '10px' }}/>
+        <p>Re-posted by <strong>you</strong></p>
+      </ShareHeader>
+
       <StyledPost data-test="post">
         {parseInt(userId) === userIdfromPost && (
           <>
@@ -340,6 +369,23 @@ const Post = ({
             <StyledEdit data-test="edit-btn" onClick={enableEdit} />
           </>
         )}
+
+        {showShareModal && (
+          <Modal onClick={() => setShowShareModal(false)}>
+            <ModalContent>
+              <p>Do you want to re-post this link?</p>
+              <div>
+                <button data-test="" cancel onClick={handleShareCancel}>
+                  No, cancel
+                </button>
+                <button data-test="" onClick={handleShareConfirm}>
+                  Yes, share!
+                </button>
+              </div>
+            </ModalContent>
+          </Modal>
+        )}
+
         {showDeleteModal && (
           <Modal onClick={() => setShowDeleteModal(false)}>
             <ModalContent>
@@ -354,7 +400,7 @@ const Post = ({
               </div>
             </ModalContent>
           </Modal>
-        )}
+        )}     
         <PostInfo>
           <div>
             <img src={pictureUrl} alt="pictureUrl" />
@@ -404,8 +450,8 @@ const Post = ({
           <StyledComment onClick={handleCommentsIconClick} />
           <StyledP>{`${comments.length}\n comments`}</StyledP>
 
-          <StyledRepost />
-          <StyledP>{`${0}\n re-posts`}</StyledP>
+          <StyledRepost onClick={handleShareClick}/>
+          <StyledP>{`${repostCount}\n re-posts`}</StyledP>
         </PostInfo>
 
         <PostText>
@@ -449,6 +495,7 @@ const Post = ({
             )}
           </div>
         </Snippet>
+      
       </StyledPost>
       {showComments && (
         <CommentsSection>
@@ -617,7 +664,7 @@ const Modal = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.9);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -645,12 +692,14 @@ const ModalContent = styled.div`
     @media (min-width: 1200px) {
       font-size: 30px;
       font-weight: 700;
+      max-width: 230px;
     }
     font-family: Lato;
     font-size: 22px;
     font-weight: 600;
     line-height: 41px;
     color: white;
+    padding: 0 41px;
   }
   div {
     margin-top: 24px;
@@ -822,18 +871,18 @@ const Snippet = styled(Link)`
 
 const StyledPost = styled.li`
   @media (min-width: 1200px) {
-    margin-top: 30px;
     min-width: 500px;
     border-radius: 10px;
     height: 276px;
     z-index: 1000;
   }
+  padding-top: 10px;
   position: relative;
-  margin-top: 13px;
   min-width: 100vw;
   height: 220px;
   background-color: #171717;
   display: flex;
+  margin-top: 15px;
 `;
 
 const PostInfo = styled.div`
@@ -1022,3 +1071,28 @@ const StyledEdit = styled(BsFillPencilFill)`
     transition-duration: 400ms;
   }
 `;
+
+const ShareHeader = styled.header`
+  height: 40px;
+  width: 100%;
+  background-color: #1E1E1E;
+  position: relative;
+  margin-top: 15px;
+  padding-bottom: 15px;
+  top: 30px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  display: flex;
+  gap: 10px;
+  color: #fff;
+  align-items: center;
+
+  p {
+    font-family: 'Lato';
+    font-weight: 300;
+  }
+
+  strong {
+    font-weight: 700;
+  }
+`
