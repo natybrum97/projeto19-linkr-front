@@ -40,7 +40,7 @@ const TimeLinePage = () => {
   };
   useEffect(() => {
     isLoged();
-    getPosts();
+    getPosts(true);
   }, []);
 
   const [newPosts, setNewPosts] = useState([]);
