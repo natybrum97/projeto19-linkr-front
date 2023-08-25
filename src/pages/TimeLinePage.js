@@ -24,7 +24,7 @@ const TimeLinePage = () => {
   const [posts, setPosts] = useState(null);
   const getPosts = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post?page=${timesFetched}&qtd=${qtd}`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post?page=${1}&qtd=${qtd}`);
       setPosts(data);
       setTimesFetched(previous => previous + 1);
       
