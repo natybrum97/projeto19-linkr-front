@@ -220,7 +220,7 @@ const Post = ({
       setOpenEditPost(false);
       setLoading(false);
       setIfEdited((previous) => previous + 1);
-      getData();
+      getData(false);
     } catch (err) {
       alert("não foi possível salvar as alterações");
       setLoading(false);
@@ -258,7 +258,7 @@ const Post = ({
       // Fechar o modal após a exclusão
       setShowDeleteModal(false);
 
-      getData();
+      getData(false);
     } catch (error) {
       alert("Não foi possivel deletar o post ");
       setShowDeleteModal(false);
@@ -347,7 +347,7 @@ const Post = ({
         },
       });
       setShowShareModal(false);
-      getData();
+      getData(false);
     } catch (error) {
       alert("Não foi possível compartilhar o post ");
       setShowShareModal(false);

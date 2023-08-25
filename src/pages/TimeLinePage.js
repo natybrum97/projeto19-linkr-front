@@ -22,11 +22,13 @@ const TimeLinePage = () => {
     postText: "",
   });
   const [posts, setPosts] = useState(null);
-  const getPosts = async () => {
+  const getPosts = async (getData) => {
     try {
       const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/post?page=${1}&qtd=${qtd}`);
       setPosts(data);
-      setTimesFetched(previous => previous + 1);
+      if (getData){
+        setTimesFetched(previous => previous + 1);
+      }
       
       setLoading(false);
       setPostInput({ postUrl: "", postText: "" });
@@ -82,7 +84,7 @@ const TimeLinePage = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      getPosts();
+      getPosts(false);
     } catch (err) {
       alert("There was an error publishing your link");
       setLoading(false);
