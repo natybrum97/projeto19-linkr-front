@@ -85,6 +85,7 @@ const HashtagsPage = () => {
                       pictureUrl={p.user.pictureUrl}
                       getData={getPosts}
                       repostCount={p.repostCount}
+                      repostedBy={p.repostedBy}
                     />
                   ))}
                 </ul>
